@@ -1,0 +1,20 @@
+{
+  "name": "la-clinicas",
+  "version": "0.1.0",
+  "private": true,
+  "description": "LA Clínicas — sistema de gestão clínica (agenda, prontuário, testes de rastreio) em Node puro + PostgreSQL. Nascido do /restrito da BemEstarClinic.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "migrar": "node migrar.js",
+    "migrar:status": "node migrar.js --status",
+    "testar": "node testar-testes.cjs && node testar-desafios.cjs && node testar-campo-vazio.cjs && node testar-limitador.js && node testar-imagem.cjs"
+  },
+  "dependencies": {
+    "pg": "^8.22.0",
+    "sharp": "^0.35.3"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

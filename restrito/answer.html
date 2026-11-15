@@ -1,0 +1,604 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<title>Questionário — LA Clínicas</title>
+<!--
+  ==========================================================================
+  A PÁGINA DO PACIENTE
+
+  Quem abre isto não é usuário do sistema: é alguém que recebeu um link no
+  WhatsApp, quase sempre no celular, quase sempre em pé. Três decisões saem daí:
+
+  1. NADA DE EXTERNO. Sem fonte de CDN, sem biblioteca, sem rastreador. A
+     página carrega em qualquer rede e não conta a terceiro que fulano abriu um
+     questionário de saúde — que é o que uma fonte remota faria, entregando o
+     IP e o endereço da página a cada visita.
+
+  2. UMA PERGUNTA POR VEZ NÃO — a lista inteira, rolando. Numa escala de cinco
+     pontos, ver a resposta anterior é o que dá referência para a seguinte, e o
+     paciente precisa poder voltar e corrigir.
+
+  3. O BOTÃO SÓ ACENDE EM 100%. Não é enfeite: a clínica lê a soma comparando
+     o mesmo teste ao longo do tratamento, e um formulário com buracos torna
+     essa comparação impossível. O servidor recusa igual, e por isso a barra
+     nunca é a única guarda.
+  ==========================================================================
+-->
+<style>
+  :root{
+    --papel:#f8f7fc; --branco:#fff; --tinta:#1e275f; --violeta:#5b4fd8;
+    --dourado:#c9a86a; --dim:#6b7086; --linha:#e8e5f3; --verde:#2e9e6b;
+    --sombra:0 10px 30px rgba(30,39,95,.08);
+  }
+  *,*::before,*::after{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--papel); color:var(--tinta); line-height:1.55;
+    font:16px/1.55 "Figtree",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2{font-family:"Cormorant Garamond",Georgia,"Times New Roman",serif;font-weight:600;line-height:1.2;margin:0}
+  h1{font-size:clamp(1.7rem,5vw,2.3rem)}
+  h2{font-size:clamp(1.3rem,4vw,1.6rem)}
+  p{margin:.7rem 0}
+
+  .env{max-width:680px;margin:0 auto;padding:1.2rem 1.1rem 3rem}
+  /* A fonte do LOGOTIPO, embutida (20,7 KB). O SVG oficial escreve
+     "LA Clínicas" com <text> em Questrial; sem a fonte na página o
+     navegador trocaria por outra e o logotipo sairia deformado — e buscar no
+     Google Fonts quebraria a regra nº 1 desta página (nada de externo: isto
+     aqui é um questionário de saúde). */
+  @font-face{
+    font-family:"Questrial";
+    font-style:normal;
+    font-weight:400;
+    font-display:swap;
+    src:url(data:font/woff2;base64,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) format("woff2");
+  }
+  .marca{padding:.2rem 0 1.2rem}
+  /* O mesmo SVG do cabeçalho do site. `currentColor` deixa a cor com o CSS:
+     tinta (o marinho da marca), como no site sobre fundo claro. A altura em
+     clamp acompanha o título da página. */
+  .marca svg{display:block;height:clamp(30px,6vw,38px);width:auto;color:var(--tinta)}
+
+  .cartao{background:var(--branco);border:1px solid var(--linha);border-radius:16px;
+    padding:1.4rem 1.3rem;box-shadow:var(--sombra)}
+  .cartao+.cartao{margin-top:.9rem}
+
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:.4rem;
+    background:var(--violeta);color:#fff;border:0;border-radius:12px;
+    padding:.85rem 1.5rem;font:inherit;font-weight:700;cursor:pointer;
+    min-height:48px;   /* alvo de toque: a tela é usada com o polegar */
+    transition:background .15s,opacity .15s}
+  .btn:hover{background:#4a3fc4}
+  .btn:disabled{background:#cdcbe0;cursor:not-allowed}
+  .btn-largo{width:100%}
+
+  /* ---------------------- barra de progresso ------------------------- */
+  /* PRESA NO TOPO. Solta, ela sairia de vista na primeira rolagem — e é
+     justamente enquanto se rola que a pessoa quer saber quanto falta. */
+  .barra-fixa{position:sticky;top:0;z-index:5;background:var(--papel);
+    padding:.7rem 0 .5rem;margin:0 0 .9rem}
+  .barra{height:10px;border-radius:999px;background:#e8e5f3;overflow:hidden}
+  .barra i{display:block;height:100%;width:0;border-radius:999px;
+    background:linear-gradient(90deg,var(--violeta),var(--dourado));
+    transition:width .25s ease}
+  .barra-txt{display:flex;justify-content:space-between;gap:1rem;
+    font-size:.82rem;color:var(--dim);font-weight:600;margin-top:.35rem}
+
+  /* --------------------------- perguntas ----------------------------- */
+  .sec{margin:1.6rem 0 .2rem;font-size:.78rem;font-weight:800;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--violeta)}
+  /* --- o texto do DESAFIO: orientação, exemplo e repertório ---------------
+     Fica visualmente ABAIXO das caixas de resposta (sem fundo branco, sem
+     borda) de propósito: é o que se lê, não o que se preenche. Quem bate o
+     olho na tela precisa ver na hora onde tem de escrever. */
+  .d-txt{margin:.55rem 0;color:var(--tinta);line-height:1.6}
+  .d-cit{margin:.35rem 0 .35rem .2rem;padding:.15rem 0 .15rem .8rem;
+    border-left:3px solid var(--linha);color:#5b6172;font-style:italic}
+  .d-lis{margin:.4rem 0 .6rem 1.1rem;color:var(--tinta);line-height:1.7}
+  .d-lis li{margin:.1rem 0}
+  .q{background:var(--branco);border:1px solid var(--linha);border-radius:14px;
+    padding:1rem 1rem .8rem;margin-top:.7rem}
+  .q--feita{border-color:#d8f0e4;background:#fbfffd}
+  .q-en{display:flex;gap:.5rem;font-weight:600;margin:0 0 .7rem}
+  .q-en b{color:var(--dim);font-weight:700;flex:none}
+  /* As opções empilham no celular e ficam lado a lado a partir de 560px:
+     "Muito Frequentemente" não cabe em cinco colunas numa tela de 360. */
+  .ops{display:grid;gap:.4rem}
+  @media(min-width:560px){.ops{grid-template-columns:repeat(5,1fr);gap:.35rem}}
+  .op{position:relative}
+  .op input{position:absolute;opacity:0;width:100%;height:100%;margin:0;cursor:pointer}
+  .op span{display:flex;align-items:center;justify-content:center;text-align:center;
+    min-height:46px;padding:.4rem .5rem;border:1.5px solid var(--linha);border-radius:10px;
+    font-size:.82rem;font-weight:600;color:var(--dim);background:#fff;transition:.12s}
+  .op input:checked+span{border-color:var(--violeta);background:#efedfd;color:var(--violeta)}
+  .op input:focus-visible+span{outline:3px solid rgba(91,79,216,.35);outline-offset:2px}
+  .q textarea{width:100%;border:1.5px solid var(--linha);border-radius:10px;padding:.7rem;
+    font:inherit;resize:vertical;min-height:110px;background:#fff;color:inherit}
+  .q textarea:focus{outline:0;border-color:var(--violeta);box-shadow:0 0 0 3px rgba(91,79,216,.14)}
+
+  .aviso{background:#fdf8ec;border:1px solid #f0e2c0;border-radius:12px;
+    padding:.8rem .9rem;font-size:.92rem;color:#6b5726}
+  .escala-guia{display:flex;flex-wrap:wrap;gap:.35rem;margin:.8rem 0 0}
+  .escala-guia span{background:#f4f2fb;border-radius:999px;padding:.2rem .6rem;
+    font-size:.78rem;color:var(--dim)}
+  .escala-guia b{color:var(--tinta)}
+
+  .fim{text-align:center;padding:2rem 1.2rem}
+  /* Só aparece quando o navegador recusa fechar a aba. Discreto de propósito:
+     é instrução, não erro — o paciente já terminou o que tinha para fazer. */
+  .fechar-manual{color:var(--dim);font-size:.9rem;margin:.9rem 0 0}
+  .selo{width:64px;height:64px;border-radius:50%;margin:0 auto 1rem;
+    background:#e7f6ee;color:var(--verde);display:flex;align-items:center;justify-content:center;
+    font-size:2rem;font-weight:700}
+  .rodape{text-align:center;color:var(--dim);font-size:.8rem;margin-top:2rem;line-height:1.6}
+  .rodape a{color:var(--dim)}
+  [hidden]{display:none !important}
+
+  /* Rodapé de ação preso embaixo enquanto se responde: o botão Concluir fica
+     no fim de uma lista de trinta perguntas, e sem isto a pessoa rolaria de
+     volta para descobrir se já pode enviar. */
+  .rodape-acao{position:sticky;bottom:0;background:linear-gradient(180deg,rgba(248,247,252,0),var(--papel) 28%);
+    padding:1.2rem 0 .6rem;margin-top:1rem}
+</style>
+</head>
+<body>
+<div class="env">
+  <div class="marca">
+    <svg viewBox="169 832 1636 293" role="img" aria-label="LA Clínicas"><g fill="currentColor"><text font-family="Questrial, sans-serif" font-size="195.83" transform="translate(460.23 1051.93)"><tspan x="0" y="0">BemEs</tspan><tspan x="622.14" y="0">t</tspan><tspan x="684.02" y="0">arClinic</tspan></text><path d="M457.37,933.57c-12.78-6.05-27.06-9.42-42.14-9.42-6.31,0-12.49.59-18.47,1.73-10.36-30.93-35.62-55.03-67.26-63.77-31.63,8.74-56.9,32.84-67.25,63.77-5.98-1.13-12.16-1.73-18.47-1.73-15.08,0-29.37,3.38-42.15,9.42-1.87,7.58-2.86,15.51-2.86,23.66,0,54.51,44.19,98.7,98.7,98.7,9.79,0,19.24-1.42,28.17-4.08-3.59-13.09-9.55-25.19-17.4-35.81-15.83-21.43-39.33-36.86-66.44-42.21,6.88-1.37,13.99-2.08,21.27-2.08,25.01,0,48.05,8.43,66.44,22.59,18.39-14.17,41.43-22.59,66.43-22.59,7.28,0,14.39.71,21.27,2.08-27.11,5.36-50.61,20.78-66.44,42.21-7.85,10.62-13.81,22.72-17.4,35.81,8.93,2.66,18.39,4.08,28.18,4.08,54.5,0,98.69-44.19,98.69-98.7,0-8.16-.99-16.08-2.86-23.66ZM329.5,976.94c-10.47,0-18.97-8.49-18.97-18.97s8.49-18.97,18.97-18.97,18.97,8.49,18.97,18.97-8.49,18.97-18.97,18.97Z"/></g></svg>
+  </div>
+
+  <!-- 1. CARREGANDO ------------------------------------------------------ -->
+  <div id="tela-carregando" class="cartao"><p style="margin:0;color:var(--dim)">Carregando…</p></div>
+
+  <!-- 1b. É VOCÊ MESMO? -----------------------------------------------------
+       Vem ANTES de qualquer conteúdo. Sem esta tela, quem recebesse o link
+       encaminhado leria o nome da pessoa e o nome do teste — e "Rastreio de
+       TDAH" já diz o suficiente sobre alguém.
+
+       O texto não explica QUAL paciente: dizer "a data de Maria" confirmaria,
+       a quem não devia, que Maria é paciente da clínica. -->
+  <div id="tela-verificar" class="cartao" hidden>
+    <h1>Antes de começar</h1>
+    <p style="color:var(--dim)">
+      Para a sua privacidade, confirme a <b>data de nascimento</b> de quem recebeu
+      este link. Ela é conferida com o cadastro da clínica.
+    </p>
+    <label for="vf-data" style="display:block;margin:.9rem 0 .3rem;font-weight:600">Data de nascimento</label>
+    <input id="vf-data" type="text" inputmode="numeric" autocomplete="bday"
+      placeholder="dd/mm/aaaa" maxlength="10" oninput="mascaraData(this)"
+      onkeydown="if(event.key==='Enter') verificar()"
+      style="width:100%;max-width:220px;font-size:1.15rem;padding:.6rem .7rem;
+             border:1px solid var(--linha);border-radius:10px">
+    <p id="vf-erro" style="color:#b3261e;margin:.6rem 0 0" hidden></p>
+    <p style="margin:1.1rem 0 0">
+      <button class="botao" id="bt-verificar" onclick="verificar()">Continuar</button>
+    </p>
+    <p style="color:var(--dim);font-size:.88rem;margin:.9rem 0 0">
+      Neste aparelho isto é pedido uma única vez.
+    </p>
+  </div>
+
+  <!-- 2. LINK NÃO DISPONÍVEL --------------------------------------------- -->
+  <div id="tela-bloqueio" class="cartao" hidden>
+    <h1 id="bl-titulo"></h1>
+    <p id="bl-texto" style="color:var(--dim)"></p>
+    <p style="color:var(--dim);font-size:.92rem">
+      Se precisar responder, fale com a clínica — podemos gerar um link novo para você.</p>
+    <p><a class="btn" href="https://wa.me/5581973037762" target="_blank" rel="noopener">Falar com a clínica</a></p>
+  </div>
+
+  <!-- 3. BOAS-VINDAS ----------------------------------------------------- -->
+  <div id="tela-inicio" hidden>
+    <div class="cartao">
+      <h1 id="in-ola">Olá</h1>
+      <p id="in-bv"></p>
+      <h2 id="in-teste" style="margin-top:1.4rem"></h2>
+      <p id="in-instr" style="color:var(--dim)"></p>
+      <p id="in-conta" style="color:var(--dim);font-size:.92rem"></p>
+      <!-- O aviso muda com o tipo: o rastreio abre uma vez, o desafio é para a
+           semana inteira. Deixar o texto do rastreio num desafio faria o
+           paciente responder tudo de memória no primeiro dia, que é o oposto
+           do exercício. -->
+      <div class="aviso" id="in-aviso" style="margin-top:1rem"></div>
+    </div>
+    <div class="rodape-acao">
+      <button class="btn btn-largo" id="bt-comecar" onclick="comecar()">Começar</button>
+    </div>
+  </div>
+
+  <!-- 4. O QUESTIONÁRIO -------------------------------------------------- -->
+  <div id="tela-form" hidden>
+    <div class="barra-fixa">
+      <div class="barra"><i id="pg-barra"></i></div>
+      <div class="barra-txt"><span id="pg-txt">0 de 0 respondidas</span><span id="pg-pct">0%</span></div>
+    </div>
+    <div id="perguntas"></div>
+    <div class="rodape-acao">
+      <p id="fm-falta" style="text-align:center;color:var(--dim);font-size:.9rem;margin:0 0 .5rem"></p>
+      <!-- "Guardado." aparece por instantes depois de cada gravação. Sem
+           nenhum sinal, quem fecha a aba no meio da semana não tem como saber
+           se o que escreveu ficou — e, na dúvida, ou reescreve tudo ou não
+           volta mais. -->
+      <p id="fm-guardado" hidden
+         style="text-align:center;color:#1a7f5a;font-size:.85rem;margin:0 0 .5rem">Guardado.</p>
+      <button class="btn btn-largo" id="bt-concluir" onclick="concluir()" disabled>Próximo</button>
+    </div>
+  </div>
+
+  <!-- 5. AGRADECIMENTO --------------------------------------------------- -->
+  <div id="tela-fim" hidden>
+    <div class="cartao fim">
+      <div class="selo">✓</div>
+      <h1>Respostas enviadas</h1>
+      <p id="fi-texto" style="color:var(--dim)"></p>
+      <button class="btn" id="bt-fechar" onclick="concluirEFechar()">Concluir</button>
+      <p id="fi-fechar" class="fechar-manual" hidden>
+        Pode fechar esta aba — o seu navegador não permite que a página se feche sozinha.
+      </p>
+    </div>
+  </div>
+
+  <p class="rodape">
+    LA Clínicas · Caruaru-PE<br>
+    Suas respostas são confidenciais e ficam no seu prontuário.
+  </p>
+</div>
+
+<script>
+"use strict";
+/* O código vem do ENDEREÇO, não de um campo: a página é servida em
+   /answer/<codigo> e é esse o único jeito de chegar aqui. */
+const CODIGO = (location.pathname.match(/\/answer\/([0-9A-Za-z]{8,11})\/?$/) || [])[1] || "";
+const $ = (s) => document.querySelector(s);
+let ITENS = [], ESCALA = [], RESP = {}, ROTEIRO = [], TIPO = "teste", RETOMANDO = false;
+
+const mostrar = (id) => {
+  ["carregando", "verificar", "bloqueio", "inicio", "form", "fim"].forEach((t) => {
+    $("#tela-" + t).hidden = t !== id;
+  });
+};
+
+/* As cinco situações que fecham o link, cada uma com o seu texto. Um "link
+   inválido" para todas faria o paciente que já respondeu achar que perdeu o
+   que preencheu, e o que abriu ontem achar que digitou errado. */
+const BLOQUEIO = {
+  concluido: ["Você já respondeu", "Este questionário foi concluído e as respostas já chegaram à clínica. Obrigado!"],
+  vencido:   ["O prazo terminou", "Este questionário tinha uma data para ser respondido e ela já passou."],
+  aberto:    ["Este link já foi aberto", "Por segurança, o link abre uma única vez — e ele já foi usado neste ou em outro aparelho."],
+  inexistente: ["Link não encontrado", "Confira se o endereço veio inteiro na mensagem. Links são copiados pela metade com facilidade."],
+};
+
+async function carregar() {
+  if (!CODIGO) return bloquear("inexistente");
+  let r;
+  try {
+    const resp = await fetch("/api/answer/" + CODIGO);
+    r = await resp.json();
+  } catch { return bloquear("inexistente"); }
+
+  if (r && r.estado === "verificar") {
+    mostrar("verificar");
+    setTimeout(() => { const c = $("#vf-data"); if (c) c.focus(); }, 40);
+    return;
+  }
+  if (!r || r.estado !== "ok") return bloquear((r && r.estado) || "inexistente");
+  pintarInicio(r);
+}
+
+/* ==========================================================================
+   A CONFERÊNCIA
+
+   A máscara é escrita enquanto a pessoa digita, e o servidor aceita as três
+   formas (dd/mm/aaaa, ddmmaaaa, aaaa-mm-dd). Data é o campo em que exigir um
+   formato exato faz alguém desistir achando que errou a própria data.
+   ========================================================================== */
+function mascaraData(el) {
+  const d = el.value.replace(/\D+/g, "").slice(0, 8);
+  el.value = d.length > 4 ? `${d.slice(0, 2)}/${d.slice(2, 4)}/${d.slice(4)}`
+    : d.length > 2 ? `${d.slice(0, 2)}/${d.slice(2)}` : d;
+}
+
+async function verificar() {
+  const campo = $("#vf-data"), bt = $("#bt-verificar"), erro = $("#vf-erro");
+  const valor = campo.value.replace(/\D+/g, "");
+  erro.hidden = true;
+  if (valor.length !== 8) {
+    erro.textContent = "Digite a data completa, com dia, mês e ano.";
+    erro.hidden = false; return;
+  }
+  bt.disabled = true; bt.textContent = "Conferindo…";
+  let r;
+  try {
+    const resp = await fetch("/api/answer/" + CODIGO + "/entrar", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ nascimento: valor }),
+    });
+    r = await resp.json();
+    /* 429: o servidor travou por tentativas demais. A mensagem dele já diz
+       quanto esperar — repetir "data não confere" aqui faria a pessoa tentar
+       de novo sem parar, achando que errou. */
+    if (resp.status === 429) { erro.textContent = r.error || "Muitas tentativas. Tente mais tarde."; erro.hidden = false;
+      bt.disabled = false; bt.textContent = "Continuar"; return; }
+  } catch {
+    erro.textContent = "Não consegui conferir agora. Tente de novo em instantes.";
+    erro.hidden = false; bt.disabled = false; bt.textContent = "Continuar"; return;
+  }
+  bt.disabled = false; bt.textContent = "Continuar";
+
+  if (!r || r.estado === "verificar") {
+    erro.textContent = "A data não confere com o cadastro. Confira e tente de novo.";
+    erro.hidden = false; return;
+  }
+  if (r.estado !== "ok") return bloquear(r.estado);
+  pintarInicio(r);
+}
+
+function pintarInicio(r) {
+  RETOMANDO = !!r.retomando;
+  $("#in-ola").textContent = r.tratamento ? "Olá, " + r.tratamento : "Olá";
+  $("#in-bv").textContent = r.boas_vindas || "";
+  $("#in-bv").hidden = !r.boas_vindas;
+  $("#in-teste").textContent = r.teste;
+  $("#in-instr").textContent = r.instrucoes || "";
+  const ehDesafio = r.tipo === "desafio";
+  $("#in-conta").textContent =
+    `São ${r.total} ${ehDesafio ? "campo" : "pergunta"}${r.total === 1 ? "" : "s"}.` +
+    (r.expira_em ? ` Você pode ${ehDesafio ? "responder" : "responder"} até ` + dataBR(r.expira_em) + "." : "");
+
+  $("#in-aviso").innerHTML = ehDesafio
+    ? "<b>Este desafio é para a semana.</b> Você pode fechar e voltar quantas vezes " +
+      "quiser — o que você escrever fica guardado. Quando clicar em <b>concluir</b>, " +
+      "o desafio é enviado à clínica e o link se encerra."
+    : "<b>Responda de uma vez só.</b> Por segurança, este link abre uma única vez — " +
+      "se você sair no meio, ele não abre de novo e será preciso pedir outro à clínica. " +
+      "Separe alguns minutinhos antes de começar.";
+
+  if (RETOMANDO) {
+    $("#bt-comecar").textContent = "Continuar de onde parei";
+    $("#in-ola").textContent += " — bom te ver de volta";
+  }
+  document.title = r.teste + " — LA Clínicas";
+  mostrar("inicio");
+}
+
+function bloquear(estado) {
+  const [t, x] = BLOQUEIO[estado] || BLOQUEIO.inexistente;
+  $("#bl-titulo").textContent = t;
+  $("#bl-texto").textContent = x;
+  mostrar("bloqueio");
+}
+
+const dataBR = (iso) => { const p = String(iso || "").split("-"); return p[2] ? `${p[2]}/${p[1]}/${p[0]}` : iso; };
+const esc = (s) => String(s == null ? "" : s)
+  .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+
+async function comecar() {
+  const bt = $("#bt-comecar");
+  bt.disabled = true; bt.textContent = "Abrindo…";
+  let r;
+  try {
+    const resp = await fetch("/api/answer/" + CODIGO + "/iniciar", { method: "POST" });
+    r = await resp.json();
+  } catch { bt.disabled = false; bt.textContent = "Começar"; return; }
+  if (!r || !r.ok) return bloquear((r && r.estado) || "inexistente");
+
+  ITENS = r.itens; ESCALA = r.escala;
+  ROTEIRO = r.roteiro || []; TIPO = r.tipo || "teste";
+  RESP = Object.assign({}, r.rascunho || {});
+  if (TIPO === "desafio" && ROTEIRO.length) montarDesafio(); else montarPerguntas();
+  devolverRascunho();
+  mostrar("form");
+  window.scrollTo(0, 0);
+}
+
+function montarPerguntas() {
+  let sec = null, n = 0;
+  $("#perguntas").innerHTML = ITENS.map((i) => {
+    const troca = i.secao !== sec; sec = i.secao;
+    n++;
+    const corpo = i.aberta
+      ? `<textarea data-k="${esc(i.chave)}" rows="4"
+           placeholder="Escreva com suas palavras…" oninput="marcar(this)"></textarea>`
+      : `<div class="ops">${ESCALA.map((e) => `
+          <label class="op">
+            <input type="radio" name="q${n}" data-k="${esc(i.chave)}" value="${e.v}" onchange="marcar(this)">
+            <span>${esc(e.r)}</span>
+          </label>`).join("")}</div>`;
+    return (troca && i.secao ? `<div class="sec">${esc(i.secao)}</div>` : "") +
+      `<div class="q" data-q="${esc(i.chave)}">
+        <p class="q-en"><b>${n}.</b> <span>${esc(i.pergunta)}</span></p>${corpo}</div>`;
+  }).join("");
+  progresso();
+}
+
+/* ==========================================================================
+   O DESAFIO — o texto do terapeuta com os campos no meio
+
+   Um rastreio é uma lista de perguntas iguais; um desafio é um TEXTO com
+   etapas, exemplos e, no lugar certo, o que responder. Montar um desafio com
+   o layout do rastreio jogaria fora toda a orientação — "faça só os primeiros
+   5 minutos", "não transforme isso em mais uma cobrança" — e entregaria sete
+   perguntas soltas que o paciente não saberia de onde vieram.
+
+   NADA aqui é innerHTML de conteúdo: cada pedaço passa por `esc()`. O texto
+   veio colado de fora e esta página é pública.
+   ========================================================================== */
+function montarDesafio() {
+  let n = 0;
+  const partes = ROTEIRO.map((b) => {
+    if (b.tipo === "secao")     return `<div class="sec">${esc(b.titulo)}</div>`;
+    if (b.tipo === "paragrafo") return `<p class="d-txt">${esc(b.texto)}</p>`;
+    if (b.tipo === "citacao")   return `<p class="d-cit">${esc(b.texto)}</p>`;
+    if (b.tipo === "lista")
+      return `<ul class="d-lis">${b.itens.map((i) => `<li>${esc(i)}</li>`).join("")}</ul>`;
+    if (b.tipo === "campo") {
+      const item = ITENS[b.aberta];
+      if (!item) return "";
+      n++;
+      return `<div class="q" data-q="${esc(item.chave)}">
+        <p class="q-en"><b>${n}.</b> <span>${esc(item.pergunta)}</span></p>
+        <textarea data-k="${esc(item.chave)}" rows="4"
+          placeholder="${esc(b.dica || "Escreva com suas palavras…")}"
+          oninput="marcar(this)"></textarea></div>`;
+    }
+    return "";
+  });
+  $("#perguntas").innerHTML = partes.join("");
+  progresso();
+}
+
+/* Devolve a cada campo o que já foi escrito nos dias anteriores. É a metade
+   visível do rascunho — sem ela, "reabrir" seria recomeçar. */
+function devolverRascunho() {
+  for (const [k, v] of Object.entries(RESP)) {
+    const alvo = document.querySelector(`[data-k="${CSS.escape(k)}"]`);
+    if (alvo && alvo.tagName === "TEXTAREA") alvo.value = v;
+    else {
+      const op = document.querySelector(`[data-k="${CSS.escape(k)}"][value="${CSS.escape(String(v))}"]`);
+      if (op) op.checked = true;
+    }
+    const caixa = document.querySelector(`.q[data-q="${CSS.escape(k)}"]`);
+    if (caixa) caixa.classList.add("q--feita");
+  }
+  progresso();
+}
+
+/* Guarda a resposta e repinta a barra. A caixa fica marcada em verde-claro
+   assim que é respondida: numa lista de trinta, é como a pessoa acha o que
+   ficou para trás sem contar de novo. */
+function marcar(el) {
+  const k = el.dataset.k;
+  const v = el.tagName === "TEXTAREA" ? el.value.trim() : el.value;
+  if (v === "") delete RESP[k]; else RESP[k] = el.tagName === "TEXTAREA" ? v : Number(v);
+  const caixa = document.querySelector(`.q[data-q="${CSS.escape(k)}"]`);
+  if (caixa) caixa.classList.toggle("q--feita", k in RESP);
+  progresso();
+  agendarGuardar();
+}
+
+/* ==========================================================================
+   GRAVAR O RASCUNHO — só desafio
+
+   Com folga de 1,5 s depois da última tecla: gravar a cada letra encheria a
+   rede do celular de alguém que talvez esteja no ônibus, e o que se ganharia
+   com isso são milissegundos de perda numa queda.
+
+   E grava também ao SAIR da página (`visibilitychange`), que é o momento
+   real de risco: a pessoa escreve, fecha a aba e sai. `sendBeacon` porque um
+   `fetch` disparado nesse instante é cancelado com a página.
+   ========================================================================== */
+let TIMER_GUARDAR = null;
+function agendarGuardar() {
+  if (TIPO !== "desafio") return;
+  clearTimeout(TIMER_GUARDAR);
+  TIMER_GUARDAR = setTimeout(guardarRascunho, 1500);
+}
+
+async function guardarRascunho() {
+  if (TIPO !== "desafio") return;
+  const marca = $("#fm-guardado");
+  try {
+    await fetch("/api/answer/" + CODIGO + "/rascunho", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ respostas: RESP }),
+    });
+    if (marca) { marca.textContent = "Guardado."; marca.hidden = false;
+      setTimeout(() => { marca.hidden = true; }, 2500); }
+  } catch { /* sem rede agora: o texto continua na tela e vai na próxima */ }
+}
+
+function guardarAoSair() {
+  if (TIPO !== "desafio" || document.visibilityState !== "hidden") return;
+  try {
+    navigator.sendBeacon("/api/answer/" + CODIGO + "/rascunho",
+      new Blob([JSON.stringify({ respostas: RESP })], { type: "application/json" }));
+  } catch { }
+}
+document.addEventListener("visibilitychange", guardarAoSair);
+
+function progresso() {
+  const feitas = Object.keys(RESP).length, total = ITENS.length;
+  const pct = total ? Math.round(feitas / total * 100) : 0;
+  $("#pg-barra").style.width = pct + "%";
+  $("#pg-pct").textContent = pct + "%";
+  $("#pg-txt").textContent = `${feitas} de ${total} respondida${total === 1 ? "" : "s"}`;
+  const falta = total - feitas;
+  $("#bt-concluir").disabled = falta > 0;
+  $("#fm-falta").textContent = falta > 0
+    ? `Falta${falta === 1 ? "" : "m"} ${falta} pergunta${falta === 1 ? "" : "s"} para concluir.`
+    : "Tudo respondido.";
+}
+
+async function concluir() {
+  const bt = $("#bt-concluir");
+  bt.disabled = true; bt.textContent = "Enviando…";
+  let r;
+  try {
+    const resp = await fetch("/api/answer/" + CODIGO + "/concluir", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ respostas: RESP }),
+    });
+    r = await resp.json();
+  } catch {
+    bt.disabled = false; bt.textContent = "Próximo";
+    $("#fm-falta").textContent = "Não consegui enviar. Confira a internet e tente de novo.";
+    return;
+  }
+  if (!r || !r.ok) {
+    if (r && r.estado === "incompleto") {
+      bt.disabled = false; bt.textContent = "Próximo";
+      $("#fm-falta").textContent = `Ainda faltam ${r.faltam} resposta(s).`;
+      return;
+    }
+    return bloquear((r && r.estado) || "inexistente");
+  }
+  $("#fi-texto").textContent = r.agradecimento || "";
+  mostrar("fim");
+  window.scrollTo(0, 0);
+}
+
+/* CONCLUIR = FECHAR A ABA — e o que fazer quando o navegador não deixa.
+
+   `window.close()` só funciona em janela que o próprio script abriu. A aba do
+   paciente veio de um toque num link do WhatsApp, então na maioria dos casos o
+   navegador IGNORA a chamada, sem erro e sem aviso: o botão pareceria quebrado.
+
+   Por isso a tentativa vem com um plano B. Se 200ms depois este código ainda
+   estiver rodando, a aba continua aberta — e a tela passa a dizer isso, em vez
+   de deixar um botão que não faz nada. O `beforeunload` é removido antes:
+   perguntar "quer mesmo sair?" a quem acabou de concluir seria absurdo. */
+function concluirEFechar() {
+  window.onbeforeunload = null;
+  window.removeEventListener("beforeunload", aoSair);
+  const bt = $("#bt-fechar");
+  bt.disabled = true;
+
+  window.close();
+  /* Última tentativa: numa aba aberta por `window.open` sem `noopener`, dar-se
+     um `opener` e fechar em seguida ainda funciona em alguns navegadores. */
+  try { window.open("", "_self"); window.close(); } catch { /* sem drama */ }
+
+  setTimeout(() => {
+    bt.hidden = true;
+    $("#fi-fechar").hidden = false;
+  }, 200);
+}
+
+/* Sair no meio perde o preenchimento — e o link não abre de novo. O aviso do
+   navegador é a última chance de evitar isso. Só enquanto o formulário está
+   aberto e tem resposta digitada: pedir confirmação numa tela vazia irrita. */
+function aoSair(e) {
+  if ($("#tela-form").hidden || !Object.keys(RESP).length) return;
+  e.preventDefault(); e.returnValue = "";
+}
+window.addEventListener("beforeunload", aoSair);
+
+carregar();
+</script>
+</body>
+</html>
