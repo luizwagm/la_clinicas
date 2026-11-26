@@ -1,6 +1,6 @@
 {
   "name": "la-clinicas",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "private": true,
   "description": "LA Clínicas — sistema de gestão clínica (agenda, prontuário, testes de rastreio) em Node puro + PostgreSQL.",
   "main": "server.js",

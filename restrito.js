@@ -36,7 +36,7 @@ const APP_DIR = path.join(ROOT, "restrito");
 /* Versão do sistema — a mesma do package.json.
    Feature nova sobe a 2ª casa (0.5.0, 0.6.0…); correção de bug sobe a 3ª
    (0.5.1, 0.5.2…). Nenhuma casa para no 9: depois de 0.9.0 vem 0.10.0. */
-const SISTEMA_VERSION = "0.5.0";
+const SISTEMA_VERSION = require("./package.json").version;
 
 /* ==========================================================================
    HISTÓRICO DE VERSÕES — o que alimenta a tela "Sobre o sistema"
@@ -53,6 +53,10 @@ const SISTEMA_VERSION = "0.5.0";
    cliente: o texto fala do que ELA ganhou, nunca de outra instalação.
    ========================================================================== */
 const HISTORICO_VERSOES = [
+  { versao: "0.5.1", data: "2026-11-26", titulo: "Correções da primeira instalação", mudancas: [
+    "O registro do servidor anunciava a versão anterior: a versão agora vem de um lugar só",
+    "O certificado do site seguro sai na primeira tentativa, sem precisar rodar o instalador de novo",
+  ] },
   { versao: "0.5.0", data: "2026-11-26", titulo: "Cadastros prontos para começar", mudancas: [
     "Catálogo de procedimentos por área: psicologia, psicanálise, desenvolvimento, fonoaudiologia, nutrição, fisioterapia, práticas integrativas, medicina, enfermagem, estética e odontologia",
     "Cada procedimento já vem com cor na agenda, duração e a anamnese que pede",

@@ -32,9 +32,10 @@ const { criarLimitador } = require("./limitador");
 const ROOT = __dirname;
 const PORT = Number(process.env.PORT) || 5204;   // PORT por env permite subir uma cópia de teste
 
-/* Versão — fonte única da verdade; o app lê daqui pela API. Toda alteração
+/* Versão — lida do package.json, a fonte única. Escrita à mão aqui ela ficou
+   para trás na 0.5.0 (o log do servidor anunciava 0.4.1). Toda alteração
    sobe a versão: 2ª casa = feature, 3ª = correção. */
-const APP_VERSION = "0.4.1";
+const APP_VERSION = require("./package.json").version;
 
 /* O .env é lido ANTES do require do restrito.js: aquele módulo monta a conexão
    do Postgres a partir das variáveis de ambiente. Em produção quem as entrega

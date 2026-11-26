@@ -65,6 +65,11 @@ limites próprios — não tocam nos dados de desenvolvimento.
 
 ## Histórico
 
+- **0.5.1 (26/11/2026) — correções da primeira instalação.** O log anunciava v0.4.1: `APP_VERSION`
+  (server.js) e `SISTEMA_VERSION` (restrito.js) eram escritos à mão — agora os dois leem o
+  `package.json`. E o ensaio do desafio ACME dos dois instaladores rodava logo depois do
+  `reload` do nginx, que é assíncrono: caía nos processos antigos e falhava com o DNS certo.
+  Agora tenta por até 10 s.
 - **0.5.0 (26/11/2026) — cadastros prontos para começar.** Instalação nova traz o catálogo
   de procedimentos do mercado (`catalogo-inicial.js`: 258 itens, 162 tratamentos em 13 áreas —
   as 29 práticas da PNPIC, as especialidades médicas de consultório, psicologia, fisio, fono,

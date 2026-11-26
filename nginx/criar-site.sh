@@ -360,7 +360,16 @@ if [ "$COM_TLS" -eq 1 ]; then
     nome="ensaio-$$-$(date +%s)"
     arq="${RAIZ_ACME}/.well-known/acme-challenge/${nome}"
     mkdir -p "$(dirname "$arq")"; echo "ensaio-criar-site" > "$arq"; chmod 644 "$arq"
-    corpo=$(curl -s --max-time 10 "http://${dom}/.well-known/acme-challenge/${nome}" 2>/dev/null || true)
+    # O reload do nginx é ASSÍNCRONO: logo depois dele, os processos antigos
+    # ainda atendem sem o bloco novo, e o primeiro pedido cai em outro site.
+    # Foi o que aconteceu na primeira instalação (DNS certo, ensaio falhou,
+    # e um minuto depois o mesmo endereço respondia). Tenta por até 10 s.
+    corpo=""
+    for _ in 1 2 3 4 5; do
+      corpo=$(curl -s --max-time 10 "http://${dom}/.well-known/acme-challenge/${nome}" 2>/dev/null || true)
+      [ "$corpo" = "ensaio-criar-site" ] && break
+      sleep 2
+    done
     rm -f "$arq"
     if [ "$corpo" = "ensaio-criar-site" ]; then return 0; fi
     ip=$(getent hosts "$dom" 2>/dev/null | awk '{print $1}' | head -1)
