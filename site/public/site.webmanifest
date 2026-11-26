@@ -1,0 +1,13 @@
+{
+  "name": "LA Clínicas",
+  "short_name": "LA Clínicas",
+  "description": "Gestão para clínicas que acompanham de perto.",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#FAF6F0",
+  "theme_color": "#16302B",
+  "icons": [
+    { "src": "/assets/img/favicon.svg", "sizes": "any", "type": "image/svg+xml" },
+    { "src": "/assets/img/icone-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

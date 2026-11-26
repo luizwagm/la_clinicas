@@ -1,0 +1,13 @@
+{
+  "name": "la-clinicas-site",
+  "version": "1.2.0",
+  "private": true,
+  "description": "Site de vendas do LA Clínicas — sistema de gestão para clínicas de psicologia, psicanálise e terapias integrativas. Estático, Node puro, sem dependências.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

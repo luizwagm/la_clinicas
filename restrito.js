@@ -33,12 +33,10 @@ const { interpretarDesafio, modeloDoDesafio } = require("./desafios");
 
 const ROOT = __dirname;
 const APP_DIR = path.join(ROOT, "restrito");
-/* Versão do sistema de gestão da clínica (/restrito).
-   REGRA DO CLIENTE: feature nova sobe a 2ª casa (1.12.0, 1.13.0, 1.14.0…);
-   correção de bug sobe a 3ª (1.14.1, 1.14.2…). A primeira casa NÃO muda —
-   houve um deslize em que subi para 2.x e o cliente corrigiu; a numeração
-   voltou para a série 1.x, que é a que ele acompanha. */
-const SISTEMA_VERSION = "1.42.0";
+/* Versão do sistema — a mesma do package.json.
+   Feature nova sobe a 2ª casa (0.5.0, 0.6.0…); correção de bug sobe a 3ª
+   (0.5.1, 0.5.2…). Nenhuma casa para no 9: depois de 0.9.0 vem 0.10.0. */
+const SISTEMA_VERSION = "0.5.0";
 
 /* ==========================================================================
    HISTÓRICO DE VERSÕES — o que alimenta a tela "Sobre o sistema"
@@ -51,222 +49,47 @@ const SISTEMA_VERSION = "1.42.0";
    A primeira entrada é sempre a versão ATUAL. Ao subir a versão: mude a
    constante acima e acrescente a entrada nova no TOPO desta lista.
 
-   Reconstruído a partir do git (a versão gravada em cada commit) e do registro
-   do projeto. Algumas versões saíram entre commits e estão descritas junto da
-   que as entregou.
+   É a história do LA Clínicas como produto. Quem lê esta tela é a clínica
+   cliente: o texto fala do que ELA ganhou, nunca de outra instalação.
    ========================================================================== */
 const HISTORICO_VERSOES = [
-  { versao: "1.42.0", data: "2026-09-02", titulo: "Alterar o prazo de um teste ou desafio vencido", mudancas: [
-    "Novo Alterar prazo no menu de cada teste e desafio ainda não respondido",
-    "Um vencido volta a valer só mudando a data — sem recomeçar e sem gerar link novo",
-    "O paciente continua com o MESMO link, e tudo o que ele já escreveu permanece",
-    "Antes só existia Recriar, que trocava o link e descartava o rascunho da semana",
-    "Rastreio que o paciente abriu e deixou vencer volta a abrir quando a clínica prorroga",
-    "Teste já respondido não tem prazo alterado — para pedir de novo, Recriar",
-    "A linha mostra prazo alterado, e o prontuário registra de qual data para qual",
+  { versao: "0.5.0", data: "2026-11-26", titulo: "Cadastros prontos para começar", mudancas: [
+    "Catálogo de procedimentos por área: psicologia, psicanálise, desenvolvimento, fonoaudiologia, nutrição, fisioterapia, práticas integrativas, medicina, enfermagem, estética e odontologia",
+    "Cada procedimento já vem com cor na agenda, duração e a anamnese que pede",
+    "Convênios com as principais operadoras do país, autogestões e planos odontológicos",
+    "Ativar e desativar procedimentos, convênios e salas direto da lista, pelo menu ⋮",
+    "Filtro de situação (ativos e inativos) nas listas de procedimentos, convênios e salas",
+    "Instalação nova começa sem profissionais e sem salas: a equipe e o espaço são de cada clínica",
   ] },
-  { versao: "1.41.0", data: "2026-08-26", titulo: "Ver o teste ou desafio antes de o paciente responder", mudancas: [
-    "Visualizar agora mostra as perguntas, as orientações e o texto do desafio mesmo sem resposta",
-    "Antes só aparecia a frase \"ainda sem respostas\" — quem acabou de escrever um desafio não conseguia reler o que enviou",
-    "Com a resposta, tudo continua igual: o que muda é só a linha da resposta em cada pergunta",
+  { versao: "0.4.1", data: "2026-11-26", titulo: "Busca de CEP", mudancas: [
+    "O CEP volta a preencher endereço, bairro e cidade no cadastro do paciente",
   ] },
-  { versao: "1.40.0", data: "2026-08-24", titulo: "Arquivar saiu da tela (o recurso continua guardado)", mudancas: [
-    "Os botões de arquivar e restaurar saíram de pacientes, prontuários e lançamentos",
-    "O item Arquivados saiu do menu da conta",
-    "Nada foi removido do sistema — a clínica optou por não usar; religar é uma chave",
+  { versao: "0.4.0", data: "2026-11-26", titulo: "Identidade própria e dados da clínica", mudancas: [
+    "Nova identidade visual do sistema, nas telas, nas impressões e na página do paciente",
+    "Tela Dados da clínica: nome, CNPJ, WhatsApp, e-mail, site e cidade",
+    "Os dados da clínica aparecem no login, no cabeçalho das impressões e na página que o paciente abre",
+    "Só o administrador altera os dados da clínica, e cada alteração fica na auditoria",
   ] },
-  { versao: "1.39.0", data: "2026-08-23", titulo: "Reunião por vídeo no chat da equipe", mudancas: [
-    "O chat ganhou chamada de vídeo e reunião de equipe, de dentro da conversa",
-    "O /restrito libera câmera, microfone e partilha de tela para o chat (o site público segue fechado)",
-    "Link curto de reunião para convidados (laclinicas.com/call/código)",
+  { versao: "0.3.0", data: "2026-11-26", titulo: "Pronto para o servidor", mudancas: [
+    "Datas do dia corretas também depois das 21h (fuso de Recife fixado)",
+    "Instalação com serviço, site seguro (HTTPS) e página de manutenção",
+    "Atualização com cópia do banco obrigatória antes de cada entrega",
   ] },
-  { versao: "1.38.0", data: "2026-08-20", titulo: "Novo desafio já vem no modelo padrão da clínica", mudancas: [
-    "A caixa do novo desafio abre preenchida: título DESAFIO DA SEMANA, mensagem de boas-vindas oficial e as perguntas 1-, 2-, 3- para completar",
-    "Tudo pode ser alterado — e colar um desafio escrito do zero continua funcionando como antes",
-    "As linhas numeradas com traço sob o cabeçalho DESAFIO viram perguntas mesmo sem interrogação",
-    "O título e a mensagem de boas-vindas escritos no texto já chegam preenchidos na tela de conferência",
+  { versao: "0.2.0", data: "2026-11-15", titulo: "Prontuário mais leve", mudancas: [
+    "Tabelas do prontuário (anamneses, agendamentos, testes e lançamentos) paginadas de 10 em 10",
+    "Acessar, desvincular, arquivar e trazer para a pasta foram para o menu ⋮ de cada linha",
+    "Desafio com as perguntas logo abaixo do título passa a ser criado normalmente",
   ] },
-  { versao: "1.37.0", data: "2026-08-18", titulo: "Resultado do teste sem o card de pontuação", mudancas: [
-    "O resultado do teste deixou de mostrar o card com a soma dos pontos",
-    "A soma também saiu da impressão — a leitura dos testes é clínica, não numérica",
-  ] },
-  { versao: "1.36.0", data: "2026-08-17", titulo: "Uma conversa por pessoa no chat", mudancas: [
-    "Remover e recriar o usuário de um profissional não parte mais a conversa em duas",
-    "O chat passou a reconhecer a pessoa pelo profissional, e não pela conta de acesso",
-    "As conversas que já tinham se partido são juntadas por ferramenta, com relatório antes",
-  ] },
-  { versao: "1.35.0", data: "2026-08-17", titulo: "Foto no cadastro e o aviso sonoro do chat", mudancas: [
-    "O cadastro de usuário aceita foto de perfil, com prévia redonda",
-    "A foto aparece no chat da equipe: na lista de pessoas e nas conversas",
-    "Trocar a foto apaga a anterior do servidor, sem deixar arquivo solto",
-    "Cada pessoa troca a própria foto; o administrador troca a de qualquer um",
-    "A foto é recortada em círculo e reduzida no servidor, sem os metadados",
-    "O aviso de mensagem nova passou a ser o toque escolhido pela clínica, mais alto",
-  ] },
-  /* ATENÇÃO — o histórico salta de 1.29.0 para 1.35.0.
-     As versões 1.30 a 1.34 (chat da equipe, elenco vivo e os desafios por
-     paciente) foram entregues sem entrada aqui. A tela "Sobre o sistema" mostra
-     a versão certa, mas não conta ao cliente o que mudou justamente nas
-     novidades que ele mais percebe. Preencher essas cinco linhas é uma
-     pendência conhecida, não um esquecimento novo. */
-  { versao: "1.29.0", data: "2026-08-14", titulo: "Testes de rastreio enviados ao paciente", mudancas: [
-    "13 questionários de rastreio prontos, em Cadastros → Testes",
-    "Nova tela Enviar testes, abaixo de Prontuário",
-    "O paciente responde por um link próprio, no celular, sem senha",
-    "Situação de cada teste: criado, enviado, aberto, vencido e concluído",
-    "Envio pelo WhatsApp com a mensagem já escrita",
-    "Bloco Testes e desafios dentro da pasta do prontuário",
-    "Respostas guardadas cifradas e impressas no papel timbrado",
-    "O sistema avisa que está iniciando em vez de dar erro nos primeiros segundos",
-    "A lista de testes se atualiza sozinha quando o paciente abre ou responde",
-  ] },
-  { versao: "1.28.0", data: "2026-08-09", titulo: "Arquivar paciente e prontuário", mudancas: [
-    "Arquivar tira o paciente da lista sem apagar nada",
-    "Arquivar tira o prontuário da tela, com o tratamento inteiro guardado",
-    "Nova tela Arquivados, no menu da conta, com uma aba para cada área",
-    "Restaurar devolve o registro à lista de origem com um clique",
-    "Arquivar NÃO é inativar nem dar alta: essas duas continuam à vista",
-    "Quem arquivou e quando ficam registrados na linha do tempo",
-  ] },
-  { versao: "1.27.1", data: "2026-08-09", titulo: "Campo de número em branco", mudancas: [
-    "Salvar com um campo de número vazio deixa de dar erro interno",
-    "O campo em branco vira “não informado”, ou volta ao valor padrão",
-    "Campo obrigatório em branco passa a dizer QUAL falta, em vez de erro",
-    "Vale para as 32 colunas numéricas de todos os cadastros e da agenda",
-  ] },
-  { versao: "1.26.0", data: "2026-07-28", titulo: "Prontuário e anamnese só do profissional", mudancas: [
-    "O profissional passa a ver apenas os prontuários e as anamneses dele",
-    "Vale em todas as telas, no prontuário completo impresso e no histórico",
-    "Dar alta, reabrir e finalizar só na própria pasta",
-    "Administrador e secretaria seguem com o acesso de antes",
-  ] },
-  { versao: "1.24.0", data: "2026-07-28", titulo: "Atalho para o painel do site", mudancas: [
-    "Novo menu de atalhos no topo, ao lado do menu da conta",
-    "Painel do site abre em nova aba, já autenticado (só administrador)",
-    "Site da clínica abre em nova aba",
-    "Sair do sistema encerra também a sessão do painel do site neste navegador",
-    "Correção: valores saíam picados em tiras verticais nas impressões e em Profissionais",
-  ] },
-  { versao: "1.23.0", data: "2026-07-28", titulo: "Editor de texto e melhorias de uso", mudancas: [
-    "Editor com formatação (negrito, itálico, listas) nos textos do prontuário",
-    "Observação da pasta, avaliações, evoluções, planos e encaminhamentos aceitam formatação",
-    "A formatação aparece também nas impressões",
-    "Botões mostram que estão trabalhando e travam a tela até concluir, evitando duplicidade",
-    "Ações das tabelas com mais de um botão reunidas num menu de três pontos",
-    "Nas telas de ação única, o botão Abrir virou ícone de lupa",
-  ] },
-  { versao: "1.22.0", data: "2026-07-28", titulo: "Auditoria", mudancas: [
-    "Nova tela com a trilha de tudo que acontece no sistema",
-    "Registra entradas, saídas, telas abertas, cadastros, edições e exclusões",
-    "Guarda data, hora, IP, quem fez e o que foi feito",
-    "Clique na linha abre o detalhe: em edições, campo a campo o antes e o depois",
-    "Filtros por período, pessoa, ação e tela",
-    "Exclusiva do administrador",
-  ] },
-  { versao: "1.21.0", data: "2026-07-28", titulo: "Dados sensíveis criptografados", mudancas: [
-    "CPF, RG, endereço, telefone, e-mail e contatos gravados cifrados no banco",
-    "Anamneses, lançamentos do prontuário e histórico também cifrados",
-    "Backup sai cifrado: só é legível em servidor com a chave",
-    "Tela e impressões continuam mostrando tudo por extenso",
-    "Busca por nome, código e CPF funciona como antes, inclusive por parte do número",
-  ] },
-  { versao: "1.20.0", data: "2026-07-28", titulo: "Tela Sobre o sistema", mudancas: [
-    "Nova tela com versão, histórico de atualizações, tecnologias e banco ativo",
-    "Histórico de versões anteriores em sanfona",
-    "Exclusiva do administrador",
-  ] },
-  { versao: "1.19.0", data: "2026-07-28", titulo: "Banco de dados PostgreSQL", mudancas: [
-    "Sistema de gestão migrado do SQLite para o PostgreSQL",
-    "Estrutura do banco controlada por migrations versionadas",
-    "Backup do banco pelo painel, em arquivo SQL completo",
-    "Uma falha no banco não derruba mais o site da clínica",
-    "Correção: procedimentos sem modelo de anamnese em instalação nova",
-  ] },
-  { versao: "1.18.1", data: "2026-07-28", titulo: "Procedimento que não aparece na agenda", mudancas: [
-    "A busca de procedimento explica quando ele existe mas o profissional escolhido não o realiza",
-  ] },
-  { versao: "1.18.0", data: "2026-07-27", titulo: "Paginação e vínculos órfãos", mudancas: [
-    "Paginação em todas as tabelas: 10, 15, 30, 50 ou 100 por página",
-    "Correção: anamneses ligadas a prontuário excluído voltam a rascunho",
-  ] },
-  { versao: "1.17.1", data: "2026-07-27", titulo: "Correções de agenda e exclusão", mudancas: [
-    "Hora de término sempre recalculada a partir do início e da duração",
-    "Anamnese só pode ser excluída quando não tem prontuário",
-    "Excluir uma pasta de prontuário solta o que estava arquivado nela",
-  ] },
-  { versao: "1.17.0", data: "2026-07-27", titulo: "Relatórios em submenu", mudancas: [
-    "Relatórios virou submenu: movimento da clínica e pacientes ativos/inativos",
-    "Relação com endereço, WhatsApp, quem assiste e especialidades",
-    "Impressão da relação em paisagem",
-  ] },
-  { versao: "1.16.0", data: "2026-07-27", titulo: "Paciente ativo e inativo", mudancas: [
-    "Ativar e inativar paciente sem apagar a ficha",
-    "Inativo some das telas de escolha e volta com um clique",
-    "Filtro Todos / Ativos / Inativos na lista",
-  ] },
-  { versao: "1.15.0", data: "2026-07-27", titulo: "Rastro das edições no prontuário", mudancas: [
-    "Editar um lançamento grava no histórico o trecho que mudou",
-    "A lista mostra quando o registro foi editado",
-  ] },
-  { versao: "1.14.0", data: "2026-07-27", titulo: "Prontuário como tela do sistema", mudancas: [
-    "Prontuário aberto virou tela com menu e barra do topo",
-    "Filtro por período em Anamneses, Agenda e Relatórios",
-    "Anamneses passou a ser um item único de menu",
-    "Cabeçalho das impressões com CNPJ, e-mail, telefone e site em linhas",
-  ] },
-  { versao: "1.13.0", data: "2026-07-26", titulo: "Regra de negócio ponta a ponta", mudancas: [
-    "Código próprio do paciente (PAC-AAAA-00000), gerado pelo sistema",
-    "Busca por código, CPF ou nome em todos os módulos",
-    "Agendamento exige paciente cadastrado",
-    "Finalizar a anamnese é o que abre o prontuário",
-  ] },
-  { versao: "1.12.0", data: "2026-07-26", titulo: "Redesenho do prontuário", mudancas: [
-    "Prontuário virou pasta por paciente e especialidade",
-    "Avaliações, evoluções, planos e encaminhamentos viraram lançamentos datados",
-    "Alta e reabertura da pasta",
-    "Histórico por paciente e por prontuário",
-  ] },
-  { versao: "1.11.0", data: "2026-07-26", titulo: "Backup automático", mudancas: [
-    "Cópia de segurança diária, com conferência de integridade",
-    "Restauração assistida por script",
-  ] },
-  { versao: "1.7.0", data: "2026-07-26", titulo: "Ajustes de agenda", mudancas: [
-    "Horário de início e término obrigatórios",
-    "Agenda ordenada por data e hora",
-  ] },
-  { versao: "1.6.0", data: "2026-07-26", titulo: "Número de controle do prontuário", mudancas: [
-    "Numeração PR-AAAA-00000, sequencial por ano e nunca reaproveitada",
-    "O número aparece nas listas e nas impressões",
-  ] },
-  { versao: "1.5.0", data: "2026-07-26", titulo: "Impressões", mudancas: [
-    "Escolha entre retrato e paisagem em todas as impressões",
-    "Impressão de uma evolução isolada",
-    "Cabeçalho e rodapé do navegador removidos do papel",
-  ] },
-  { versao: "1.4.0", data: "2026-07-26", titulo: "Busca de CEP", mudancas: [
-    "CEP preenche endereço, bairro e cidade no cadastro de paciente",
-  ] },
-  { versao: "1.3.0", data: "2026-07-26", titulo: "Acesso do profissional", mudancas: [
-    "Cadastrar profissional já cria o login dele",
-    "Bloquear e desbloquear acesso, derrubando a sessão aberta",
-    "Cadastro com histórico não pode ser excluído, só bloqueado",
-  ] },
-  { versao: "1.2.0", data: "2026-07-26", titulo: "Cores e ficha do paciente", mudancas: [
-    "Ficha do paciente dentro do prontuário",
-    "Cores oficiais dos procedimentos na agenda",
-    "Busca de procedimento separada por consulta, sessão e procedimento",
-    "Agenda de um profissional por vez",
-  ] },
-  { versao: "1.1.0", data: "2026-07-24", titulo: "Impressões e busca", mudancas: [
-    "Marca d'água da clínica nas impressões",
-    "Busca de paciente por CPF, com ou sem máscara",
-  ] },
-  { versao: "1.0.0", data: "2026-07-24", titulo: "Primeira versão", mudancas: [
+  { versao: "0.1.0", data: "2026-09-02", titulo: "Primeira versão", mudancas: [
     "Cadastros: pacientes, profissionais, convênios, procedimentos e salas",
-    "Agenda de atendimentos com controle de choque de horário e sala",
-    "Anamneses em três modelos, com impressão em papel timbrado",
-    "Prontuário, documentos e relatórios",
-    "Perfis de acesso: administrador, secretaria e profissional",
+    "Agenda por profissional, com controle de choque de horário e sala, em mês, tabela e quadro",
+    "Anamneses em três modelos; finalizar a anamnese abre o prontuário",
+    "Prontuário em pasta por paciente e especialidade, com avaliações, evoluções, planos e encaminhamentos",
+    "13 testes de rastreio respondidos pelo paciente por link, com o resultado no prontuário",
+    "Desafios: questionário escrito pela clínica e respondido pelo paciente por link, com prazo prorrogável",
+    "Foto no cadastro dos usuários",
+    "Dados sensíveis cifrados no banco, auditoria de acesso e perfis de administrador, secretaria e profissional",
+    "Impressões em papel timbrado, relatórios e cópia do banco baixada pelo administrador",
   ] },
 ];
 
@@ -475,6 +298,7 @@ const MODULO_ROTULO = {
   usuarios: "Usuários do Sistema", relatorios: "Relatórios",
   relatorios_pacientes: "Pacientes ativos/inativos", painel: "Painel",
   auditoria: "Auditoria", sobre: "Sobre o sistema", conta: "Minha conta",
+  clinica: "Dados da clínica",
 };
 const rotuloModulo = (t) => MODULO_ROTULO[t] || t;
 
@@ -577,7 +401,7 @@ const TECNOLOGIAS = [
   { nome: "JavaScript, HTML e CSS", papel: "Interface", detalhe: "sem framework — tela única" },
   { nome: "Migrations em SQL", papel: "Controle da estrutura do banco", detalhe: "cada mudança é um arquivo versionado" },
   { nome: "scrypt", papel: "Proteção das senhas", detalhe: "com sal individual por senha" },
-  { nome: "pg_dump", papel: "Backup", detalhe: "cópia diária automática e sob demanda" },
+  { nome: "pg_dump", papel: "Backup", detalhe: "cópia completa do banco, baixada pelo administrador" },
 ];
 // CSP das telas do sistema de gestão e do portal — bloqueia script/objeto
 // externos; só libera as fontes do Google. 'unsafe-inline' é preciso porque as
@@ -682,6 +506,60 @@ const getC = async (k) => (await Q.get("SELECT value FROM g_config WHERE key=?",
 const setC = (k, v) => Q.run("INSERT INTO g_config(key,value) VALUES(?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value", k, String(v));
 
 /* ==========================================================================
+   DADOS DA CLÍNICA — o timbre das impressões, o nome no topo da tela e da
+   página do paciente, e o WhatsApp do botão "Falar com a clínica".
+
+   Moram no BANCO de cada instalação (g_config), e não no código. O LA Clínicas
+   é um produto: cada clínica tem os próprios dados. Enquanto estavam escritos
+   no app.html eram os da clínica onde o sistema nasceu — CNPJ e WhatsApp de
+   outra empresa em todo prontuário impresso, e o paciente que tocava em
+   "Falar com a clínica" caía na conversa de outra clínica.
+   ========================================================================== */
+const CLINICA_CAMPOS = { nome: 80, sub: 120, cnpj: 18, email: 120, whatsapp: 20, site: 120, cidade: 60 };
+const CLINICA_PADRAO = { nome: "Sua Clínica", sub: "", cnpj: "", email: "", whatsapp: "", site: "", cidade: "" };
+
+async function dadosDaClinica() {
+  let salvo = {};
+  try { salvo = JSON.parse((await getC("clinica")) || "{}") || {}; } catch { salvo = {}; }
+  const d = { ...CLINICA_PADRAO };
+  for (const k of Object.keys(CLINICA_CAMPOS)) if (typeof salvo[k] === "string") d[k] = salvo[k];
+  if (!d.nome.trim()) d.nome = CLINICA_PADRAO.nome;
+  return d;
+}
+
+/* Só o que a página PÚBLICA do paciente precisa: nome, cidade e o número do
+   botão. CNPJ e e-mail não fazem falta a quem responde um questionário. O
+   número vai com o 55 na frente porque o wa.me exige o código do país. */
+async function dadosPublicosDaClinica() {
+  const d = await dadosDaClinica();
+  const w = soDigitos(d.whatsapp);
+  return { nome: d.nome, cidade: d.cidade, whatsapp: (w.length === 10 || w.length === 11) ? "55" + w : w };
+}
+
+function limparClinica(b) {
+  const d = {}, erros = [];
+  for (const [k, max] of Object.entries(CLINICA_CAMPOS)) {
+    const v = String((b && b[k]) ?? "").replace(/\s+/g, " ").trim();
+    if (v.length > max) erros.push(`O campo ${k} aceita até ${max} caracteres.`);
+    d[k] = v.slice(0, max);
+  }
+  if (!d.nome) erros.push("Informe o nome da clínica.");
+  if (d.cnpj) {
+    const c = soDigitos(d.cnpj);
+    if (c.length !== 14) erros.push("O CNPJ precisa ter 14 dígitos.");
+    else d.cnpj = c.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, "$1.$2.$3/$4-$5");
+  }
+  if (d.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email)) erros.push("O e-mail não parece válido.");
+  if (d.whatsapp && ![10, 11, 12, 13].includes(soDigitos(d.whatsapp).length))
+    erros.push("Informe o WhatsApp com DDD — por exemplo (81) 99999-0000.");
+  if (d.site) {
+    d.site = d.site.replace(/^https?:\/\//i, "").replace(/\/+$/, "");
+    if (!/^[a-z0-9-]+(\.[a-z0-9-]+)+(\/\S*)?$/i.test(d.site)) erros.push("O site não parece um endereço — por exemplo suaclinica.com.br.");
+  }
+  return { d, erros };
+}
+
+/* ==========================================================================
    NUMERAÇÃO SEQUENCIAL — PR-AAAA-00001 (prontuário) e PAC-AAAA-00001 (paciente)
    Sequencial por ANO, único e NUNCA reaproveitado. É por esses números que a
    clínica localiza e controla o registro (busca, arquivo físico, encaminhamento).
@@ -736,55 +614,10 @@ const rotuloTipo = (t) => ROTULO_TIPO[t] || t;
 
 const emitirNumeroProntuario = (id, ano) => emitirSequencial("PR", "pront_seq", "prontuario", "numero", id, ano);
 const emitirCodigoPaciente   = (id, ano) => emitirSequencial("PAC", "pac_seq", "pacientes", "codigo", id, ano);
-/* ==========================================================================
-   QUAL ANAMNESE CADA PROCEDIMENTO PEDE
-   Semeado uma única vez a partir do mapa abaixo e depois EDITÁVEL no cadastro
-   de Procedimentos — procedimento novo não obriga a mexer no código.
-   É esse vínculo que faz o agendamento oferecer "Preencher anamnese" já no
-   formulário certo.
-   ========================================================================== */
-const ANAMNESE_POR_PROCEDIMENTO = {
-  "Psicanálise Individual": "psicanalise",
-  "Psicanálise Casal": "psicanalise",
-  "Protocolo Integrativo — Ozônio e Detox": "ozonio",
-  "Ozonioterapia": "ozonio",
-  "Detox Iônico": "ozonio",
-  "Acupuntura": "integrativas",
-  "Aromaterapia": "integrativas",
-  "Terapia Floral": "integrativas",
-  "Exame de Biorressonância": "integrativas",
-  "Ventosaterapia": "integrativas",
-  "Kinesioterapia": "integrativas",
-};
-/* Cores OFICIAIS da clínica — extraídas do documento "AGENDA PRA O CADASTRO DA
-   CLÍNICA.docx", onde cada procedimento estava escrito na sua cor. A cor é por
-   FAMÍLIA: consulta e sessão do mesmo procedimento usam a mesma. */
-const CORES_PROCEDIMENTO = {
-  "Psicanálise Individual": "#FF0000",
-  "Psicanálise Casal": "#0000CC",
-  "Protocolo Integrativo — Ozônio e Detox": "#4472C4",
-  "Ozonioterapia": "#538135",
-  "Detox Iônico": "#FFC000",
-  "Acupuntura": "#C00000",
-  "Aromaterapia": "#7030A0",
-  "Terapia Floral": "#FF0066",
-  "Exame de Biorressonância": "#00FF00",
-  "Ventosaterapia": "#FFFF00",
-  "Kinesioterapia": "#00CCFF",
-};
-const PROCEDIMENTOS_SEED = [
-  ["Psicanálise Individual", "Consulta"], ["Psicanálise Individual", "Sessão"],
-  ["Psicanálise Casal", "Consulta"], ["Psicanálise Casal", "Sessão"],
-  ["Protocolo Integrativo — Ozônio e Detox", "Consulta"], ["Protocolo Integrativo — Ozônio e Detox", "Sessão"],
-  ["Ozonioterapia", "Consulta"], ["Ozonioterapia", "Sessão"],
-  ["Detox Iônico", "Consulta"], ["Detox Iônico", "Sessão"],
-  ["Acupuntura", "Consulta"], ["Acupuntura", "Sessão"],
-  ["Aromaterapia", "Consulta"],
-  ["Terapia Floral", "Consulta"],
-  ["Exame de Biorressonância", "Procedimento"],
-  ["Ventosaterapia", "Consulta"], ["Ventosaterapia", "Sessão"],
-  ["Kinesioterapia", "Consulta"], ["Kinesioterapia", "Sessão"],
-];
+/* O que uma instalação nova já traz cadastrado (procedimentos por área, com a
+   cor, a duração e a anamnese de cada um; convênios). Arquivo próprio, como os
+   testes: é lista, não regra. Ver catalogo-inicial.js. */
+const { PROCEDIMENTOS_INICIAIS, CONVENIOS_INICIAIS } = require("./catalogo-inicial");
 
 /* ==========================================================================
    INICIALIZAÇÃO — o que antes rodava solto no topo do arquivo
@@ -904,61 +737,33 @@ async function iniciarRestrito() {
       "Administrador", "admin", hashSenha("laclinicas-gestao"), "admin", AGORA_SEED);
     console.log("  · /restrito: sistema de gestão criado. Login: admin · senha: laclinicas-gestao");
   }
+  /* Convênios: "Particular" e as principais operadoras (catalogo-inicial.js).
+     Todos nascem ATIVOS; a clínica desativa os que não atende, pelo menu ⋮
+     da lista. Desativar não apaga: some só das telas de escolha. */
   if ((await Q.get("SELECT COUNT(*) c FROM convenios")).c === 0) {
-    const lista = ["Particular", "Cartão LA Clínicas", "Efycard", "Forms Fitness Academia",
-      "Pad Saúde", "Prosmed", "São Gabriel", "System Saúde"];
-    for (let i = 0; i < lista.length; i++)
-      await Q.run("INSERT INTO convenios(nome,ativo,sort,criado) VALUES(?,1,?,?)", lista[i], i, AGORA_SEED);
+    for (let i = 0; i < CONVENIOS_INICIAIS.length; i++)
+      await Q.run("INSERT INTO convenios(nome,ativo,sort,criado) VALUES(?,1,?,?)", CONVENIOS_INICIAIS[i], i, AGORA_SEED);
   }
-  if ((await Q.get("SELECT COUNT(*) c FROM salas")).c === 0) {
-    const lista = ["Consultório 01", "Consultório 02", "Consultório 03"];
-    for (let i = 0; i < lista.length; i++)
-      await Q.run("INSERT INTO salas(nome,ativo,sort,criado) VALUES(?,1,?,?)", lista[i], i, AGORA_SEED);
-  }
+  /* Salas NÃO são semeadas: cada clínica tem as suas, com os nomes dela. Um
+     "Consultório 01" de fábrica só aparecia na agenda para ser apagado. */
+
+  /* Procedimentos: o catálogo do mercado, por área, já com cor, duração e a
+     anamnese que cada um pede — tudo numa linha só, sem passo posterior que
+     dependa de nome (era o que deixava procedimento sem anamnese). */
   if ((await Q.get("SELECT COUNT(*) c FROM procedimentos")).c === 0) {
-    for (let i = 0; i < PROCEDIMENTOS_SEED.length; i++) {
-      const p = PROCEDIMENTOS_SEED[i];
-      await Q.run("INSERT INTO procedimentos(nome,tipo,cor,duracao,ativo,sort,criado) VALUES(?,?,?,40,1,?,?)",
-        p[0], p[1], CORES_PROCEDIMENTO[p[0]] || "#5B4FD8", i, AGORA_SEED);
+    for (let i = 0; i < PROCEDIMENTOS_INICIAIS.length; i++) {
+      const p = PROCEDIMENTOS_INICIAIS[i];
+      await Q.run("INSERT INTO procedimentos(nome,tipo,cor,duracao,anamnese_modelo,ativo,sort,criado) VALUES(?,?,?,?,?,1,?,?)",
+        p.nome, p.tipo, p.cor, p.duracao, p.anamnese || null, i, AGORA_SEED);
     }
+    console.log(`  · /restrito: ${PROCEDIMENTOS_INICIAIS.length} procedimento(s) no catálogo inicial.`);
   }
-  /* Bancos que nasceram com as cores provisórias recebem as oficiais UMA vez.
-     A trava em g_config garante que, se a clínica trocar uma cor depois, o
-     deploy seguinte não desfaça a escolha dela. */
-  if ((await getC("cores_oficiais")) !== "1") {
-    for (const [nome, cor] of Object.entries(CORES_PROCEDIMENTO))
-      await Q.run("UPDATE procedimentos SET cor=? WHERE nome=?", cor, nome);
-    await setC("cores_oficiais", "1");
-  }
-  if ((await Q.get("SELECT COUNT(*) c FROM profissionais")).c === 0) {
-    for (const p of [["Dr. Ronalldo JM", "#5B4FD8"], ["Dr. Samuel Teixdan", "#0E8F7E"]])
-      await Q.run("INSERT INTO profissionais(nome,especialidade,cor,ativo,criado) VALUES(?,'[]',?,1,?)", p[0], p[1], AGORA_SEED);
-  }
+  /* Profissional NÃO é semeado: a equipe é de cada clínica e é cadastrada na
+     implantação. */
 
-  /* 7. qual anamnese cada procedimento pede — semeado uma vez, editável depois.
+  /* 7. o catálogo de testes, a partir dos modelos do arquivo.
 
-     DEPOIS de semear os procedimentos, e não antes. Este passo é um UPDATE:
-     num banco recém-criado ele não encontrava linha nenhuma, atualizava zero e
-     mesmo assim gravava a trava em g_config — deixando TODOS os procedimentos
-     sem modelo de anamnese, para sempre, e o atalho "Preencher anamnese" do
-     agendamento sem funcionar.
-
-     O erro estava aqui desde o início; nunca apareceu porque o banco de
-     produção nunca esteve vazio quando a rotina rodou. Só ficou visível ao
-     montar o Postgres do zero. */
-  if ((await getC("anamnese_modelo_seed")) !== "1") {
-    const SQL_MODELO = "UPDATE procedimentos SET anamnese_modelo=? WHERE nome=? AND (anamnese_modelo IS NULL OR anamnese_modelo='')";
-    let n = 0;
-    for (const [nome, modelo] of Object.entries(ANAMNESE_POR_PROCEDIMENTO)) n += (await Q.run(SQL_MODELO, modelo, nome)).changes;
-    await setC("anamnese_modelo_seed", "1");
-    if (n) console.log(`  · /restrito: ${n} procedimento(s) ligados ao seu modelo de anamnese.`);
-  }
-
-  /* 8. o catálogo de testes, a partir dos modelos do arquivo.
-
-     SEM TRAVA em g_config, ao contrário do passo 7 — e isso é a diferença que
-     importa. Aquele é um UPDATE que a clínica pode desfazer editando; este é
-     um INSERT de linha que ou existe ou não existe, e a chave é UNIQUE. Rodar
+     SEM TRAVA em g_config — e isso importa: é um INSERT de linha que ou existe ou não existe, e a chave é UNIQUE. Rodar
      de novo não repete nada, e um teste NOVO acrescentado ao arquivo JS entra
      sozinho no próximo boot. Com trava, ele nunca entraria.
 
@@ -2286,6 +2091,22 @@ async function rotaApi(req, res, p) {
     return json(res, 200, { ...linha, detalhe, rotulo: ACOES_ROTULO[linha.acao] || linha.acao, modulo_rotulo: rotuloModulo(linha.modulo) });
   }
 
+  /* Dados da clínica: QUALQUER perfil lê (a recepção imprime ficha e agenda com
+     o timbre), só o administrador grava. */
+  if (p === "clinica" && req.method === "GET") return json(res, 200, await dadosDaClinica());
+  if (p === "clinica" && req.method === "PUT") {
+    if (s.perfil !== "admin") return json(res, 403, { error: "Só o administrador altera os dados da clínica." });
+    const antes = await dadosDaClinica();
+    const { d, erros } = limparClinica(await readBody(req));
+    if (erros.length) return json(res, 400, { error: erros[0], erros });
+    await setC("clinica", JSON.stringify(d));
+    const mudou = diferencas(antes, d, "clinica");
+    if (Object.keys(mudou).length)
+      auditar({ req, sessao: s, acao: "editar", modulo: "clinica",
+        resumo: `Alterou os dados da clínica: ${Object.keys(mudou).join(", ")}`, detalhe: { alteracoes: mudou } });
+    return json(res, 200, d);
+  }
+
   if (p === "sobre" && req.method === "GET") {
     if (s.perfil !== "admin") return json(res, 403, { error: "Tela exclusiva do administrador." });
 
@@ -2386,7 +2207,7 @@ async function rotaApi(req, res, p) {
   // globais (só a sua agenda e prontuários) — devolve os dele.
   if (p === "painel") {
     const n = async (sql, ...args) => (await Q.get(sql, ...args)).c;
-    const hoje = new Date().toISOString().slice(0, 10);
+    const hoje = hojeISO();
     if (s.perfil === "profissional") {
       return json(res, 200, { profissional: true,
         agendaHoje: await n("SELECT COUNT(*) c FROM atendimentos WHERE profissional_id=? AND data=?", s.profissionalId, hoje),
@@ -2713,7 +2534,7 @@ async function rotaApi(req, res, p) {
     if (recusaAlta) return json(res, 403, { error: recusaAlta });
     const b = await readBody(req);
     if (acao === "alta") {
-      const quando = b.data || new Date().toISOString().slice(0, 10);
+      const quando = b.data || hojeISO();
       await Q.run("UPDATE prontuario SET status='Alta', alta_em=?, alta_motivo=? WHERE id=?", quando, b.motivo || "", id);
       await anotar("prontuario", id, "Alta", `${pr.especialidade}${b.motivo ? " — " + b.motivo : ""}`, s);
       auditar({ req, sessao: s, acao: "alta", modulo: "prontuario", entidadeId: Number(id),
@@ -3298,7 +3119,7 @@ async function rotaApi(req, res, p) {
       const donoId = an.profissional_id || (soDoProfissional(s) ? s.profissionalId : null);
       const novoId = await Q.inserir(
         "INSERT INTO prontuario(paciente_id,especialidade,profissional,profissional_id,status,aberto_em,usuario_id,criado) VALUES(?,?,?,?,'Ativo',?,?,?)",
-        an.paciente_id, procedimento, prof, donoId, (an.data || new Date().toISOString().slice(0, 10)), s.userId, agora());
+        an.paciente_id, procedimento, prof, donoId, (an.data || hojeISO()), s.userId, agora());
       const numero = await emitirNumeroProntuario(novoId);
       pasta = { id: novoId, numero, especialidade: procedimento, status: "Ativo" };
       criada = true;
@@ -3704,12 +3525,12 @@ async function rotaApi(req, res, p) {
         if (!b.especialidade) return json(res, 400, { error: "Selecione o procedimento deste prontuário." });
         const ja = await Q.get("SELECT numero FROM prontuario WHERE paciente_id=? AND especialidade=?", b.paciente_id, b.especialidade);
         if (ja) return json(res, 409, { error: `Este paciente já tem prontuário de ${b.especialidade} (nº ${ja.numero}). Abra o existente — cada procedimento tem um único prontuário.` });
-        if (!b.aberto_em) b.aberto_em = new Date().toISOString().slice(0, 10);
+        if (!b.aberto_em) b.aberto_em = hojeISO();
       }
       if (tabela === "prontuario_registros") {
         if (!b.prontuario_id) return json(res, 400, { error: "Lançamento sem prontuário." });
         if (!TIPOS_REGISTRO.includes(b.tipo)) return json(res, 400, { error: "Tipo de lançamento inválido." });
-        if (!b.data) b.data = new Date().toISOString().slice(0, 10);
+        if (!b.data) b.data = hojeISO();
       }
       if (tabela === "atendimentos" && s.perfil === "profissional") b.profissional_id = s.profissionalId; // marca na própria agenda
       if (tabela === "atendimentos") {
@@ -4255,4 +4076,5 @@ const primeiroNome = (n) => String(n || "").trim().split(/\s+/)[0] || "";
 
 module.exports = { handleRestrito, iniciarRestrito, SISTEMA_VERSION, CAMPOS_PROTEGIDOS, sessao, auditar, registrarEncerrarPainel,
   estadoDoLink, iniciarTeste, concluirTeste, salvarRascunho, abrirComNascimento, aoMudarEquipe,
+  dadosPublicosDaClinica,
   _paraTeste: { prepararCampos, destinoDoVazio, TIPOS, sortearCodigo, situacaoDoEnvio, hojeISO } };

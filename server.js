@@ -16,6 +16,14 @@
    · Sistema:  http://localhost:5204/restrito/
    · Paciente: http://localhost:5204/answer/<código>   (link enviado no WhatsApp)
    ========================================================================== */
+/* O FUSO DO PROCESSO, antes de qualquer data ser calculada.
+   O servidor (Hetzner) roda em UTC, e o restrito.js monta "hoje" pelos
+   componentes LOCAIS do relógio — que, em UTC, viram o dia seguinte às 21h de
+   Caruaru: o painel contava a agenda de amanhã e alta, abertura de prontuário
+   e lançamentos saíam datados com o dia seguinte. Fixado aqui, e não na unit,
+   porque o código viaja com o produto; outra cidade troca por TZ no ambiente. */
+process.env.TZ = process.env.TZ || "America/Recife";
+
 const http = require("node:http");
 const fs = require("node:fs");
 const path = require("node:path");
@@ -26,7 +34,7 @@ const PORT = Number(process.env.PORT) || 5204;   // PORT por env permite subir u
 
 /* Versão — fonte única da verdade; o app lê daqui pela API. Toda alteração
    sobe a versão: 2ª casa = feature, 3ª = correção. */
-const APP_VERSION = "0.1.0";
+const APP_VERSION = "0.4.1";
 
 /* O .env é lido ANTES do require do restrito.js: aquele módulo monta a conexão
    do Postgres a partir das variáveis de ambiente. Em produção quem as entrega
@@ -36,7 +44,7 @@ carregarAmbiente(__dirname);
 const { handleRestrito, iniciarRestrito, sessao: sessaoRestrito,
         registrarEncerrarPainel, aoMudarEquipe,
         estadoDoLink, iniciarTeste, concluirTeste, salvarRascunho,
-        abrirComNascimento } = require("./restrito");
+        abrirComNascimento, dadosPublicosDaClinica } = require("./restrito");
 
 /* Não existe painel /admin neste projeto — o restrito chama este gancho ao
    sair, e aqui ele simplesmente não tem o que encerrar. */
@@ -110,6 +118,56 @@ const readBody = (req) => new Promise((ok, bad) => {
   req.on("end", () => { try { ok(d ? JSON.parse(d) : {}); } catch { bad(new Error("JSON inválido")); } });
 });
 
+/* ==========================================================================
+   CONSULTA DE CEP — o cadastro de pacientes preenche o endereço pelo CEP.
+
+   Ficou para trás quando o sistema saiu do servidor do site de origem (era lá
+   que a rota morava), e a tela seguiu chamando /api/cep: o preenchimento
+   automático estava quebrado em silêncio desde a 0.1.0.
+
+   Fonte: ViaCEP (base dos Correios, aberta e sem chave), com a BrasilAPI de
+   reserva. Pelo servidor, e não direto do navegador: a CSP da gestão só deixa
+   a tela falar com a própria origem, e o IP de quem digita não vai para
+   terceiro. Cache de 30 dias e 60 consultas por minuto por IP.
+   ========================================================================== */
+const cacheCep = new Map();               // cep -> { dados, ts }
+const CEP_TTL = 30 * 24 * 3600e3;
+const cepPorIp = new Map();               // ip -> { n, ts }
+const CEP_MAX = 60, CEP_JANELA = 60e3;
+function podeConsultarCep(ip) {
+  const t = cepPorIp.get(ip);
+  if (!t || Date.now() - t.ts > CEP_JANELA) { cepPorIp.set(ip, { n: 1, ts: Date.now() }); return true; }
+  t.n++;
+  return t.n <= CEP_MAX;
+}
+setInterval(() => { const lim = Date.now() - CEP_JANELA; for (const [k, v] of cepPorIp) if (v.ts < lim) cepPorIp.delete(k); }, 5 * 60e3).unref();
+
+async function pegarJson(url) {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 4000);
+  try {
+    const r = await fetch(url, { signal: ctrl.signal, headers: { "User-Agent": "LA-Clinicas/1.0" } });
+    if (!r.ok) return null;
+    return await r.json();
+  } finally { clearTimeout(timer); }
+}
+async function buscarCep(cep) {
+  try {
+    const v = await pegarJson(`https://viacep.com.br/ws/${cep}/json/`);
+    if (v && !v.erro && v.localidade) {
+      return { cep, logradouro: v.logradouro || "", complemento: v.complemento || "",
+        bairro: v.bairro || "", cidade: v.localidade, uf: v.uf || "" };
+    }
+    if (v && v.erro) return null;                        // CEP inexistente: não adianta a segunda fonte
+  } catch { /* cai para a segunda fonte */ }
+  const b = await pegarJson(`https://brasilapi.com.br/api/cep/v1/${cep}`);
+  if (b && b.city) {
+    return { cep, logradouro: b.street || "", complemento: "",
+      bairro: b.neighborhood || "", cidade: b.city, uf: b.state || "" };
+  }
+  return null;
+}
+
 const servidor = http.createServer(async (req, res) => {
   /* LA Chat — antes de qualquer coisa, e é assim que o módulo pede. */
   if (chat.rota(req, res)) return;
@@ -145,11 +203,11 @@ const servidor = http.createServer(async (req, res) => {
       ? JSON.stringify({ error: "O sistema está indisponível: o banco de dados não respondeu. Avise o suporte." })
       : `<!doctype html><meta charset="utf-8"><title>Sistema indisponível</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<style>body{font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:#F7F9FC;color:#25324a;
+<style>body{font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:#FAF6F0;color:#1E2623;
 display:grid;place-items:center;min-height:100vh;margin:0;padding:1.5rem}
-.c{max-width:34rem;background:#fff;border:1px solid #e2e8f2;border-radius:16px;padding:2rem;
-box-shadow:0 10px 30px rgba(37,80,160,.08)}h1{font-size:1.3rem;margin:0 0 .8rem;color:#2557a7}
-p{line-height:1.6;margin:.6rem 0}small{color:#7a8299}</style>
+.c{max-width:34rem;background:#fff;border:1px solid #E6DCCD;border-radius:16px;padding:2rem;
+box-shadow:0 10px 30px rgba(22,48,43,.08)}h1{font-size:1.3rem;margin:0 0 .8rem;color:#16302B}
+p{line-height:1.6;margin:.6rem 0}small{color:#55605B}</style>
 <div class="c"><h1>Sistema indisponível</h1>
 <p>O banco de dados não respondeu. <b>Nenhum dado foi perdido</b> — o sistema volta
 assim que a conexão for restabelecida.</p>
@@ -182,6 +240,33 @@ Consulte <code>journalctl -u laclinicas -n 40</code>.</small></p></div>`);
        se puder ser tentado sem limite. SÓ O BALDE POR IP na descoberta de
        código (`conta` nula — um balde fixo seria negação de serviço mundial;
        um balde por código nunca encheria, o atacante troca de código). */
+    /* Nome, cidade e WhatsApp da clínica para a página do paciente — os mesmos
+       para qualquer link, então não dizem nada sobre quem é paciente. */
+    const mcep = p.match(/^\/api\/cep\/(\d{8})$/);
+    if (mcep && req.method === "GET") {
+      const cep = mcep[1];
+      const emCache = cacheCep.get(cep);
+      if (emCache && Date.now() - emCache.ts < CEP_TTL) return json(res, 200, emCache.dados);
+      if (!podeConsultarCep(clientIp(req))) return json(res, 429, { error: "Muitas consultas de CEP. Aguarde um instante." });
+      try {
+        const dados = await buscarCep(cep);
+        if (!dados) return json(res, 404, { error: "CEP não encontrado." });
+        cacheCep.set(cep, { dados, ts: Date.now() });
+        if (cacheCep.size > 5000) cacheCep.delete(cacheCep.keys().next().value);
+        return json(res, 200, dados);
+      } catch (e) {
+        console.warn("  ⚠ consulta de CEP falhou:", e.message);
+        return json(res, 503, { error: "Não consegui consultar o CEP agora. Preencha o endereço à mão." });
+      }
+    }
+    // CEP mal formatado: responde sem sair para a internet
+    if (/^\/api\/cep\//.test(p)) return json(res, 400, { error: "Informe um CEP com 8 dígitos." });
+
+    if (p === "/api/clinica" && req.method === "GET") {
+      res.setHeader("Cache-Control", "no-cache");
+      return json(res, 200, await dadosPublicosDaClinica());
+    }
+
     const mans = p.match(/^\/api\/answer\/([0-9A-Za-z]{8,11})(?:\/(iniciar|concluir|entrar|rascunho))?$/);
     if (mans) {
       const codigo = mans[1], acao = mans[2] || "";
@@ -277,6 +362,16 @@ Consulte <code>journalctl -u laclinicas -n 40</code>.</small></p></div>`);
     }
     /* Código fora do formato não vira busca de arquivo. */
     if (/^\/answer(\/|$)/.test(p)) { res.writeHead(404, { "Content-Type": "text/plain" }); return res.end("404"); }
+
+    /* A marca do sistema (0.2.0). A tela pede /assets/img/favicon.svg — no
+       BemEstar esse arquivo é do SITE, que não veio para cá, e o login e a
+       barra lateral mostravam imagem quebrada desde a cópia. Um arquivo só,
+       por rota explícita: autorizar por LUGAR, e não abrir a pasta /assets. */
+    if (p === "/assets/img/favicon.svg" && (req.method === "GET" || req.method === "HEAD")) {
+      res.writeHead(200, { "Content-Type": "image/svg+xml", "Cache-Control": "public, max-age=86400",
+        "X-Content-Type-Options": "nosniff" });
+      return res.end(req.method === "HEAD" ? undefined : fs.readFileSync(path.join(ROOT, "restrito", "favicon.svg")));
+    }
 
     /* Não há árvore de arquivos estáticos: tudo que o sistema serve sai do
        handleRestrito. O que chegou aqui não existe. */

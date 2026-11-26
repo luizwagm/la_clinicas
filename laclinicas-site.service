@@ -1,0 +1,50 @@
+[Unit]
+# ==========================================================================
+#  MOLDE do serviço do SITE DE VENDAS (pasta site/). __DESTINO__, __USUARIO__,
+#  __GRUPO__ e __PORTA__ são trocados pelo nginx/criar-site-vendas.sh.
+#
+#  Mesmo repositório do sistema, PROCESSO SEPARADO, de propósito: o site é
+#  vitrine pública; o sistema guarda prontuário. Um defeito ou um pico de
+#  acesso no site não derruba a agenda da clínica, e o site não lê nenhum
+#  segredo (/etc/laclinicas.env não entra aqui).
+# ==========================================================================
+Description=LA Clínicas — site de vendas
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=__USUARIO__
+Group=__GRUPO__
+WorkingDirectory=__DESTINO__/site
+ExecStart=/usr/bin/node server.js
+Restart=always
+RestartSec=3
+
+# Escuta SÓ no loopback: quem fala com a internet é o nginx.
+Environment=HOST=127.0.0.1
+Environment=PORT=__PORTA__
+Environment=NODE_ENV=production
+
+# --- contenção do processo -------------------------------------------------
+# O site só LÊ arquivos: nenhuma pasta gravável, nenhum segredo.
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+RestrictNamespaces=true
+LockPersonality=true
+
+# NÃO ponha MemoryDenyWriteExecute aqui: ele mata o V8 (status=5/TRAP) alguns
+# segundos depois de subir.
+
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=laclinicas-site
+
+[Install]
+WantedBy=multi-user.target

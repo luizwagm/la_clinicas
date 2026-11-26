@@ -24,7 +24,7 @@ assets/video/
 restrito/arquivos/
 
 # Credenciais do PostgreSQL (sistema de gestão). Em produção quem entrega as
-# variáveis é o systemd (EnvironmentFile=/etc/bemestar.env); este .env é só
+# variáveis é o systemd (EnvironmentFile=/etc/laclinicas.env); este .env é só
 # para desenvolvimento — e mesmo assim nunca entra no repositório.
 .env
 

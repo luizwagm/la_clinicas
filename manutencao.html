@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>LA Clínicas — voltamos em instantes</title>
+<!-- Servida pelo NGINX quando o aplicativo não responde (502/504): durante a
+     reinicialização de uma atualização, ou se o processo caiu. Por isso tudo
+     é embutido — não há app de pé para entregar CSS, fonte ou imagem. -->
+<style>
+  body{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:#FAF6F0;color:#1E2623;
+    display:grid;place-items:center;min-height:100vh;margin:0;padding:1.5rem}
+  .c{max-width:32rem;background:#fff;border:1px solid #E6DCCD;border-radius:16px;padding:2rem;
+    box-shadow:0 10px 30px rgba(22,48,43,.08)}
+  h1{font-size:1.25rem;margin:0 0 .8rem;color:#16302B}
+  p{line-height:1.6;margin:.6rem 0}
+  small{color:#55605B}
+</style>
+</head>
+<body>
+<div class="c">
+  <h1>O sistema está sendo atualizado</h1>
+  <p>Volta em instantes — normalmente menos de um minuto. <b>Nenhum dado foi perdido.</b></p>
+  <p>Se você estava preenchendo algo, aguarde e recarregue a página antes de salvar.</p>
+  <p><small>Se esta tela continuar por mais de cinco minutos, avise o suporte.</small></p>
+</div>
+<script>setTimeout(function(){ location.reload(); }, 20000);</script>
+</body>
+</html>

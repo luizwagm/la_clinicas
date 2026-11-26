@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /marca/
+
+Sitemap: https://laclinicas.com.br/sitemap.xml

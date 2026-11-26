@@ -1,0 +1,82 @@
+[Unit]
+# ==========================================================================
+#  MOLDE do serviço. __DESTINO__, __USUARIO__, __GRUPO__ e __PORTA__ são
+#  trocados pelo nginx/criar-site.sh na instalação.
+#
+#  Por que molde e não caminho gravado: onde o projeto mora, quem é o dono e
+#  qual porta usa são decisões de SERVIDOR, não de código. Gravá-los aqui
+#  criaria um segundo lugar dizendo onde o projeto está.
+#
+#  Para instalar à mão (sem o criar-site.sh):
+#      sed -e 's#__DESTINO__#/var/www/projetos/LA-Clinicas#g' \
+#          -e 's#__USUARIO__#deploy#g' -e 's#__GRUPO__#deploy#g' \
+#          -e 's#__PORTA__#5204#g' laclinicas.service \
+#        > /etc/systemd/system/laclinicas.service
+# ==========================================================================
+Description=LA Clínicas — sistema de gestão clínica
+After=network-online.target postgresql.service
+Wants=network-online.target
+
+# `After`, e NÃO `Requires`, para o Postgres: a unit `postgresql.service` do
+# Ubuntu é uma FACHADA (termina com sucesso em um segundo; quem segura o banco
+# é a `postgresql@<versão>-main`). Quem aguenta a ausência do banco é o app:
+# ele responde 503 com recado claro e religa sozinho quando o banco volta.
+
+[Service]
+Type=simple
+User=__USUARIO__
+Group=__GRUPO__
+WorkingDirectory=__DESTINO__
+
+# As pastas graváveis são criadas ANTES de o serviço subir, como root (o `+`).
+# Com ProtectSystem=strict, uma pasta que falta não pode ser criada pelo app:
+# o mkdir dá ENOENT/EROFS e o serviço entra em laço de reinício.
+ExecStartPre=+/bin/mkdir -p __DESTINO__/data __DESTINO__/backups __DESTINO__/restrito/arquivos
+ExecStartPre=+/bin/chown __USUARIO__:__GRUPO__ __DESTINO__/data __DESTINO__/backups __DESTINO__/restrito/arquivos
+ExecStart=/usr/bin/node server.js
+Restart=always
+RestartSec=3
+
+# Escuta SÓ no loopback: quem fala com a internet é o nginx.
+Environment=HOST=127.0.0.1
+Environment=PORT=__PORTA__
+Environment=NODE_ENV=production
+
+# CREDENCIAIS DO POSTGRES E CHAVE DOS DADOS — fora do projeto e do git:
+#
+#     PGPASSWORD=<a senha do papel laclinicas>
+#     DADOS_CHAVE=<openssl rand -base64 32>
+#
+#     install -o root -g __GRUPO__ -m 640 /dev/null /etc/laclinicas.env
+#
+# 640 com o grupo do serviço: o processo lê, nenhum outro usuário lê.
+# `Environment=` aqui dentro não serviria — `systemctl cat` mostra a unit a
+# qualquer um. SEM o `-` na frente, de propósito: aqui não existe site que
+# possa subir sem o banco — sem o arquivo, o certo é o serviço não subir e o
+# erro aparecer na hora, e não um 503 eterno.
+EnvironmentFile=/etc/laclinicas.env
+
+# --- contenção do processo -------------------------------------------------
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+RestrictNamespaces=true
+LockPersonality=true
+
+# NÃO ponha MemoryDenyWriteExecute aqui: ele mata o V8 (status=5/TRAP) alguns
+# segundos depois de subir, e parece erro de rede ou de banco.
+
+# Única área gravável: a do projeto (data/limites, anexos, backups).
+ReadWritePaths=__DESTINO__
+
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=laclinicas
+
+[Install]
+WantedBy=multi-user.target

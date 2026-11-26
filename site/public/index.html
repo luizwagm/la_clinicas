@@ -1,0 +1,639 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sistema para clínicas de psicologia | LA Clínicas</title>
+<meta name="description" content="Agenda, prontuário e anamneses — e testes que o paciente responde pelo celular, direto no prontuário. Dados criptografados e preço por faixa de equipe.">
+<link rel="canonical" href="https://laclinicas.com.br/">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="theme-color" content="#16302B">
+<link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/img/icone-512.png">
+<link rel="manifest" href="/site.webmanifest">
+
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:site_name" content="LA Clínicas">
+<meta property="og:title" content="LA Clínicas — o cuidado não para quando a sessão termina">
+<meta property="og:description" content="Gestão para clínicas de psicologia, psicanálise e terapias integrativas: agenda, prontuário, anamneses e testes que o paciente responde pelo celular.">
+<meta property="og:url" content="https://laclinicas.com.br/">
+<meta property="og:image" content="https://laclinicas.com.br/assets/img/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,400..600,0..100;1,9..144,400..500,0..100&family=Instrument+Sans:wght@400..700&display=swap">
+<link rel="stylesheet" href="/assets/css/site.css">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://laclinicas.com.br/#org",
+      "name": "LA Software House",
+      "url": "https://luizaugust.me",
+      "taxID": "31.579.940/0001-00",
+      "address": { "@type": "PostalAddress", "addressLocality": "Caruaru", "addressRegion": "PE", "addressCountry": "BR" }
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://laclinicas.com.br/#site",
+      "url": "https://laclinicas.com.br/",
+      "name": "LA Clínicas",
+      "inLanguage": "pt-BR",
+      "publisher": { "@id": "https://laclinicas.com.br/#org" }
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "LA Clínicas",
+      "applicationCategory": "BusinessApplication",
+      "applicationSubCategory": "Gestão de clínicas",
+      "operatingSystem": "Navegador (web)",
+      "description": "Sistema de gestão para clínicas de psicologia, psicanálise e terapias integrativas: agenda, pacientes, prontuário por especialidade, anamneses, testes de rastreio e desafios respondidos pelo paciente por link, auditoria e dados sensíveis criptografados.",
+      "publisher": { "@id": "https://laclinicas.com.br/#org" },
+      "offers": [
+        { "@type": "Offer", "name": "Consultório", "price": "249.00", "priceCurrency": "BRL", "description": "Até 3 profissionais, por mês, tudo incluído" },
+        { "@type": "Offer", "name": "Clínica", "price": "449.00", "priceCurrency": "BRL", "description": "Até 10 profissionais, por mês, tudo incluído" },
+        { "@type": "Offer", "name": "Centro Clínico", "price": "790.00", "priceCurrency": "BRL", "description": "Profissionais sem limite, por mês, tudo incluído" },
+        { "@type": "Offer", "name": "Módulo de vídeo", "price": "19.00", "priceCurrency": "BRL", "description": "Opcional, por pessoa da equipe, por mês" }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "O paciente precisa baixar aplicativo ou criar conta para responder?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Não. Ele recebe um link pelo WhatsApp, confirma a data de nascimento e responde no navegador do celular. O que ele escreve fica salvo enquanto responde." } },
+        { "@type": "Question", "name": "Onde ficam os dados da minha clínica?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Cada clínica tem uma instalação exclusiva, com banco de dados e chave de criptografia próprios. Os dados sensíveis são criptografados, e o administrador baixa a cópia completa do banco quando quiser." } },
+        { "@type": "Question", "name": "O LA Clínicas faz faturamento de convênio (TISS) ou financeiro?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Não. O LA Clínicas cuida do atendimento: agenda, prontuário, anamneses, testes e equipe. Os convênios são cadastrados para organizar a agenda, sem faturamento." } },
+        { "@type": "Question", "name": "O vídeo está incluído nos planos?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Não. O vídeo é um módulo à parte: R$ 19 por pessoa da equipe, por mês, ligado só para quem vai usar. Pacientes e convidados que entram pelo link não pagam." } },
+        { "@type": "Question", "name": "Tem fidelidade?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No plano mensal, não: cancela quando quiser e recebe a cópia completa dos seus dados. No anual você paga 10 meses e usa 12." } }
+      ]
+    }
+  ]
+}
+</script>
+<script src="/assets/js/site.js" defer></script>
+</head>
+<body>
+<a class="pular" href="#conteudo">Pular para o conteúdo</a>
+
+<!-- =================================================================== TOPO -->
+<header class="topo" id="topo">
+  <div class="caixa topo__in">
+    <a class="marca" href="/" aria-label="LA Clínicas — início">
+      <svg class="marca__simbolo" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="12" fill="#16302B"/><path d="M34.63 21.15A11 11 0 1 1 24.96 13.04" fill="none" stroke="#FAF6F0" stroke-width="4.6" stroke-linecap="round"/><circle cx="31.07" cy="15.57" r="3" fill="#E8916A"/></svg>
+      <span class="marca__nome"><b>LA</b>Clínicas</span>
+    </a>
+    <nav class="menu" id="menu" aria-label="Principal">
+      <a href="#entre-sessoes">Entre sessões</a>
+      <a href="#recursos">Funcionalidades</a>
+      <a class="opcional" href="#seguranca">Segurança</a>
+      <a href="#planos">Planos</a>
+      <a class="opcional" href="#perguntas">Perguntas</a>
+      <a class="btn btn--acao" href="#contato">Agendar demonstração</a>
+    </nav>
+    <button class="menu-botao" type="button" aria-controls="menu" aria-expanded="false" aria-label="Abrir menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/></svg>
+    </button>
+  </div>
+</header>
+
+<main id="conteudo">
+
+<!-- =================================================================== HERO -->
+<section class="hero" aria-labelledby="titulo-hero">
+  <div class="caixa hero__grade">
+    <div>
+      <p class="olho">Gestão para clínicas que acompanham de perto</p>
+      <h1 id="titulo-hero">O cuidado não para quando a <em>sessão termina.</em></h1>
+      <p class="lead">Agenda, prontuário e anamneses num só lugar — e testes e desafios que o paciente responde pelo celular, entre uma sessão e outra, com tudo chegando direto no prontuário.</p>
+      <div class="hero__acoes">
+        <a class="btn btn--acao" href="#contato">Agendar uma demonstração
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10h12M11 5l5 5-5 5"/></svg></a>
+        <a class="btn btn--linha" href="#planos">Ver os planos</a>
+      </div>
+      <ul class="selos">
+        <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="9" width="12" height="8" rx="2"/><path d="M7 9V6.5a3 3 0 0 1 6 0V9"/></svg>Dados sensíveis criptografados</li>
+        <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9.5 10 4l7 5.5V16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M8 17v-5h4v5"/></svg>Instalação exclusiva da sua clínica</li>
+        <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7" cy="7" r="2.5"/><circle cx="13.5" cy="8" r="2"/><path d="M2.5 16c.6-2.6 2.4-4 4.5-4s3.9 1.4 4.5 4M12 12.2c1.9-.4 4 .6 4.6 3.8"/></svg>Preço por faixa de equipe, não por profissional</li>
+      </ul>
+    </div>
+
+    <div class="cena" aria-hidden="true" data-revela>
+      <div class="janela">
+        <div class="janela__barra"><i></i><i></i><i></i><span class="janela__url">suaclinica.com.br/restrito — Agendamento</span></div>
+        <div class="app">
+          <div class="app__lado">
+            <div class="app__marca"><svg viewBox="0 0 48 48"><path d="M34.63 21.15A11 11 0 1 1 24.96 13.04" fill="none" stroke="#FAF6F0" stroke-width="4.6" stroke-linecap="round"/><circle cx="31.07" cy="15.57" r="3" fill="#E8916A"/></svg>Sua Clínica</div>
+            <div class="app__item">Painel</div>
+            <div class="app__item">Cadastros</div>
+            <div class="app__item app__item--ativo">Agendamento</div>
+            <div class="app__item">Prontuário</div>
+            <div class="app__item">Enviar teste</div>
+            <div class="app__item">Documentos</div>
+            <div class="app__item">Relatórios</div>
+          </div>
+          <div class="app__corpo">
+            <div class="app__topo">
+              <div><div class="app__titulo">Agendamento</div><div class="app__mini">Hoje · todos os profissionais</div></div>
+              <span class="app__chip">+ Novo agendamento</span>
+            </div>
+            <div class="tabmock">
+              <div class="tabmock__cab"><span>Hora</span><span>Paciente</span><span>Procedimento</span><span class="so-largo">Situação</span></div>
+              <div class="tabmock__lin"><span>08:00</span><span>Marina S.</span><span><i class="ev ev--a">Psicoterapia</i></span><span class="so-largo">Confirmado</span></div>
+              <div class="tabmock__lin"><span>09:00</span><span>Ana L.</span><span><i class="ev ev--b">Ozonioterapia</i></span><span class="so-largo">Agendado</span></div>
+              <div class="tabmock__lin"><span>09:40</span><span>Paulo R.</span><span><i class="ev ev--c">Psicanálise casal</i></span><span class="so-largo">Confirmado</span></div>
+              <div class="tabmock__lin"><span>10:20</span><span>Rita F.</span><span><i class="ev ev--e">Terapia floral</i></span><span class="so-largo">Agendado</span></div>
+              <div class="tabmock__lin"><span>11:00</span><span>Lucas N.</span><span><i class="ev ev--d">Acupuntura</i></span><span class="so-largo">Atendido</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="celular">
+        <div class="celular__tela">
+          <div class="celular__notch"></div>
+          <div class="celular__clinica"><svg viewBox="0 0 48 48"><path d="M34.63 21.15A11 11 0 1 1 24.96 13.04" fill="none" stroke="#16302B" stroke-width="4.6" stroke-linecap="round"/><circle cx="31.07" cy="15.57" r="3" fill="#B4502A"/></svg>Sua Clínica</div>
+          <div class="celular__teste">Rastreio Terapêutico de Ansiedade</div>
+          <div class="barra-prog"><i></i></div>
+          <div class="celular__passo">Pergunta 4 de 20 · últimos 30 dias</div>
+          <div class="celular__perg">Sentiu dificuldade para relaxar?</div>
+          <div class="escala">
+            <span>Nunca</span>
+            <span>Raramente</span>
+            <span class="marcado">Às Vezes</span>
+            <span>Frequentemente</span>
+            <span>Muito Frequentemente</span>
+          </div>
+          <div class="celular__salvo">Uma alternativa por item</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================================================== FEITO PARA -->
+<div class="para">
+  <div class="caixa para__in">
+    <span class="para__rotulo">Feito para</span>
+    <span class="para__item">Psicologia</span>
+    <span class="para__item">Psicanálise</span>
+    <span class="para__item">Terapias integrativas</span>
+    <span class="para__item">Clínicas multiprofissionais</span>
+  </div>
+</div>
+
+<!-- ================================================================ DORES -->
+<section class="secao" aria-labelledby="titulo-dores">
+  <div class="caixa">
+    <div class="cabeca" data-revela>
+      <p class="olho">Por que outro sistema</p>
+      <h2 id="titulo-dores">Sistema de consultório médico não entende <em>acompanhamento.</em></h2>
+      <p class="lead">Tratamento terapêutico é contínuo: semanas, meses, às vezes anos. O LA Clínicas foi desenhado em volta disso — e não da consulta avulsa.</p>
+    </div>
+    <div class="dores">
+      <article class="dor" data-revela>
+        <p class="dor__antes"><s>Questionário em papel, digitado depois</s></p>
+        <h3>O paciente responde de casa</h3>
+        <p>Teste de rastreio ou desafio da semana vai por link no WhatsApp. A resposta cai no prontuário, já somada, sem ninguém redigitar nada.</p>
+      </article>
+      <article class="dor" data-revela>
+        <p class="dor__antes"><s>Anotação espalhada em pastas e cadernos</s></p>
+        <h3>Um prontuário por tratamento</h3>
+        <p>Cada especialidade do paciente tem a sua pasta numerada, com avaliação, evoluções, plano, encaminhamentos, alta — e o histórico de tudo.</p>
+      </article>
+      <article class="dor" data-revela>
+        <p class="dor__antes"><s>Mensalidade que sobe a cada contratação</s></p>
+        <h3>Preço por faixa, não por cabeça</h3>
+        <p>O valor muda só quando a equipe muda de faixa: de 4 a 10 profissionais, por exemplo, é o mesmo. E todos os planos têm tudo.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================== ENTRE AS SESSÕES -->
+<section class="secao entre" id="entre-sessoes" aria-labelledby="titulo-entre">
+  <div class="caixa">
+    <div class="cabeca" data-revela>
+      <p class="olho">O que só o LA Clínicas faz</p>
+      <h2 id="titulo-entre">O que acontece <em>entre as sessões</em> também é tratamento.</h2>
+      <p class="lead">Testes de rastreio e desafios terapêuticos que o paciente responde no tempo dele, e que o profissional lê antes da próxima sessão.</p>
+    </div>
+    <div class="entre__grade">
+      <ol class="fluxo" id="fluxo">
+        <li data-revela>
+          <h3>O profissional escolhe o que enviar</h3>
+          <p>Um dos 13 testes de rastreio do catálogo, ou um desafio escrito do jeito dele — é só colar o texto, e o sistema separa título, orientações e perguntas.</p>
+        </li>
+        <li data-revela>
+          <h3>O link vai pelo WhatsApp</h3>
+          <p>Um botão abre a conversa com o paciente já com a mensagem pronta. Sem aplicativo para baixar, sem conta para criar, com prazo para responder.</p>
+        </li>
+        <li data-revela>
+          <h3>O paciente responde no tempo dele</h3>
+          <p>Ele confirma a data de nascimento e responde pelo celular. O desafio guarda o rascunho: dá para escrever um pouco por dia, durante a semana.</p>
+        </li>
+        <li data-revela>
+          <h3>Tudo chega no prontuário</h3>
+          <p>A clínica acompanha em tempo real — enviado, aberto, concluído. A resposta entra na pasta do paciente, com a soma calculada e espaço para a análise do terapeuta.</p>
+        </li>
+      </ol>
+      <aside class="testes" data-revela>
+        <h3>13 testes de rastreio incluídos</h3>
+        <p>Prontos para enviar, com escala de cinco pontos e soma automática. <b>Envios ilimitados</b>, em qualquer plano.</p>
+        <ul>
+          <li>Ansiedade</li>
+          <li>Depressão</li>
+          <li>Estresse</li>
+          <li>Autoestima</li>
+          <li>TDAH adulto</li>
+          <li>Apego emocional</li>
+          <li>Crenças centrais</li>
+          <li>Padrões de infância</li>
+          <li>Funcionalidade diária</li>
+          <li>Relacionamento conjugal</li>
+          <li>Perfil de personalidade</li>
+          <li>Características associadas ao borderline</li>
+          <li>Questionário psicanalítico de autoconhecimento</li>
+        </ul>
+        <small>São instrumentos de rastreio para apoiar o terapeuta — não fazem diagnóstico, e o sistema não inventa ponto de corte que o instrumento não traz. A parte de uso exclusivo do terapeuta nunca aparece para o paciente.</small>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ RECURSOS -->
+<section class="secao" id="recursos" aria-labelledby="titulo-recursos">
+  <div class="caixa">
+    <div class="cabeca" data-revela>
+      <p class="olho">Funcionalidades</p>
+      <h2 id="titulo-recursos">Da recepção à alta, <em>a clínica inteira</em> num lugar só.</h2>
+    </div>
+    <div class="recursos">
+      <article class="recurso" data-revela>
+        <div class="recurso__icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4M8 14h3"/></svg></div>
+        <h3>Agenda sem choque de horário</h3>
+        <p>Em calendário do mês, em tabela ou em quadro; um profissional por vez ou todos. Cores por procedimento, e o sistema não deixa marcar o mesmo profissional — nem a mesma sala — duas vezes no mesmo horário.</p>
+      </article>
+      <article class="recurso" data-revela>
+        <div class="recurso__icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5"/></svg></div>
+        <h3>Cadastro completo do paciente</h3>
+        <p>Código próprio, busca por nome, CPF ou celular, endereço preenchido pelo CEP, responsável para menores, consentimento e alertas no topo da ficha.</p>
+      </article>
+      <article class="recurso" data-revela>
+        <div class="recurso__icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6.5A2.5 2.5 0 0 1 6.5 4H10l2 2.5h5.5A2.5 2.5 0 0 1 20 9v8.5a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 17.5z"/><path d="M8.5 13h7M8.5 16h4"/></svg></div>
+        <h3>Prontuário por especialidade</h3>
+        <p>Uma pasta numerada por tratamento, com avaliação, evolução, plano e encaminhamentos datados. Alta, reabertura e o histórico de cada mudança.</p>
+      </article>
+      <article class="recurso" data-revela>
+        <div class="recurso__icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3.5" width="14" height="17" rx="2.5"/><path d="M9 3.5V5h6V3.5M8.5 10l1.5 1.5 3-3M8.5 15.5h7"/></svg></div>
+        <h3>Anamneses prontas</h3>
+        <p>Modelos para psicanálise, ozonioterapia e terapias integrativas, com os dados pessoais já preenchidos do cadastro. Ao finalizar, o prontuário se abre sozinho.</p>
+      </article>
+      <article class="recurso" data-revela>
+        <div class="recurso__icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 8V3.5h10V8M7 17H5a1.5 1.5 0 0 1-1.5-1.5v-6A1.5 1.5 0 0 1 5 8h14a1.5 1.5 0 0 1 1.5 1.5v6A1.5 1.5 0 0 1 19 17h-2"/><rect x="7" y="13.5" width="10" height="7" rx="1"/></svg></div>
+        <h3>Impressões com os dados da clínica</h3>
+        <p>Ficha, anamnese, evolução, prontuário completo de anos de tratamento e agenda — com o cabeçalho da clínica (nome, CNPJ e contatos), em retrato ou paisagem, prontas para PDF.</p>
+      </article>
+      <article class="recurso" data-revela>
+        <div class="recurso__icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3.5 19c.6-3 2.8-4.6 5.5-4.6M15 11.5l1.6 1.6 3.4-3.4"/><path d="M13 19c.3-1.2.9-2.2 1.7-2.9"/></svg></div>
+        <h3>Cada um vê o que deve</h3>
+        <p>Perfis de administração, recepção e profissional. A recepção agenda e cadastra, mas não abre prontuário. Cada profissional vê só os próprios atendimentos.</p>
+      </article>
+      <article class="recurso" data-revela>
+        <div class="recurso__icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M21 20H3"/></svg></div>
+        <h3>Relatórios e painel</h3>
+        <p>Atendimentos por período, procedimento, mês e situação, com impressão, e a relação de pacientes ativos e inativos. Ao entrar, o painel mostra os números do dia.</p>
+      </article>
+      <article class="recurso" data-revela>
+        <div class="recurso__icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a7.5 7.5 0 0 1-11 6.6L4 20l1.4-4.5A7.5 7.5 0 1 1 20 12z"/><path d="M9 11.5h6M9 14h3.5"/></svg></div>
+        <h3>Chat da equipe</h3>
+        <p>Conversa interna com foto e aviso sonoro. Com o <b>módulo de vídeo</b>: chamada, reunião de até 6 pessoas com partilha de tela e um link para quem é de fora.</p>
+      </article>
+      <article class="recurso" data-revela>
+        <div class="recurso__icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5 5 6.5v5c0 4.3 3 7.6 7 9 4-1.4 7-4.7 7-9v-5z"/><path d="M9.5 12l1.8 1.8L15 10"/></svg></div>
+        <h3>Convênios, salas e procedimentos</h3>
+        <p>Cadastros que organizam a agenda: cada profissional com os procedimentos que realiza, cada procedimento com sua duração, cor e modelo de anamnese.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ========================================================== PRONTUÁRIO -->
+<section class="secao secao--sem-topo" aria-labelledby="titulo-pront">
+  <div class="caixa duo">
+    <div data-revela>
+      <p class="olho">Prontuário</p>
+      <h2 id="titulo-pront">Anos de tratamento, <em>organizados</em> e à mão.</h2>
+      <p class="lead lead--espaco">O prontuário foi redesenhado junto com quem atende: uma pasta por paciente e especialidade, que cresce sessão a sessão sem virar bagunça.</p>
+      <ul class="lista-check">
+        <li><div><b>Número de controle por pasta</b> <span>— PR-2026-00042, gerado pelo sistema e impossível de editar ou repetir.</span></div></li>
+        <li><div><b>Lançamentos datados, com rastro</b> <span>— avaliação, evolução, plano e encaminhamento; cada edição fica registrada no histórico.</span></div></li>
+        <li><div><b>Testes e desafios dentro da pasta</b> <span>— com a situação de cada envio e o prazo, que dá para prorrogar sem perder o que o paciente já escreveu.</span></div></li>
+        <li><div><b>Prontuário completo em uma impressão</b> <span>— resumo, anamneses, cada pasta em página própria e o histórico do paciente.</span></div></li>
+      </ul>
+    </div>
+    <div class="pasta" aria-hidden="true" data-revela>
+      <div class="pasta__topo">
+        <div>
+          <div class="pasta__num">PR-2026-00042</div>
+          <div class="pasta__nome">Marina Siqueira</div>
+          <div class="pasta__meta">Psicanálise individual · aberto em 03/02/2026</div>
+        </div>
+        <span class="situacao situacao--ativo">Em tratamento</span>
+      </div>
+      <div class="abas"><span>Avaliação</span><span class="ativa">Evolução · 14</span><span>Plano</span><span>Encaminhamentos</span></div>
+      <div class="registro"><div class="registro__data">18/11/2026 · Sessão 14</div><p>Relata semana mais tranquila no trabalho. Retomou o tema da relação com a mãe a partir do desafio da semana…</p></div>
+      <div class="registro"><div class="registro__data">11/11/2026 · Sessão 13</div><p>Trouxe sonho recorrente. Combinado o desafio sobre rotina de sono para a próxima semana…</p></div>
+      <div class="pasta__sub">Testes e desafios</div>
+      <div class="envio"><div><b>Desafio da semana: rotina de sono</b><span>Respondido em 16/11</span></div><span class="situacao situacao--ok">Concluído</span></div>
+      <div class="envio"><div><b>Rastreio Terapêutico de Ansiedade</b><span>Prazo até 28/11</span></div><span class="situacao situacao--aberto">Aberto</span></div>
+      <div class="envio"><div><b>Rastreio Terapêutico de Autoestima</b><span>Enviado hoje pelo WhatsApp</span></div><span class="situacao situacao--env">Enviado</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ SEGURANÇA -->
+<section class="secao seguranca" id="seguranca" aria-labelledby="titulo-seg">
+  <div class="caixa">
+    <div class="cabeca" data-revela>
+      <p class="olho">Segurança e LGPD</p>
+      <h2 id="titulo-seg">Dado de saúde mental é o mais íntimo que existe. <em>Tratamos assim.</em></h2>
+    </div>
+    <div class="seg">
+      <article class="seg__item" data-revela>
+        <div class="seg__icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10.5" width="14" height="9.5" rx="2"/><path d="M8.5 10.5V7.5a3.5 3.5 0 0 1 7 0v3"/></svg></div>
+        <div><h3>Criptografia no próprio banco</h3><p>CPF, RG, endereço, telefone, e-mail, anamnese e prontuário são gravados criptografados (AES-256). Uma cópia do banco, sozinha, não revela nada.</p></div>
+      </article>
+      <article class="seg__item" data-revela>
+        <div class="seg__icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9.5 12 3l9 6.5V19a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 19z"/><path d="M9.5 20.5v-6h5v6"/></svg></div>
+        <div><h3>Uma instalação só sua</h3><p>Sua clínica não divide banco com outras. Banco de dados, chave de criptografia e endereço exclusivos.</p></div>
+      </article>
+      <article class="seg__item" data-revela>
+        <div class="seg__icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2M11 8v3l2 1.5"/></svg></div>
+        <div><h3>Auditoria de quem fez o quê</h3><p>Quem entrou, que telas abriu, quem cadastrou, alterou, excluiu ou imprimiu — e, em cada alteração, o valor antes e depois.</p></div>
+      </article>
+      <article class="seg__item" data-revela>
+        <div class="seg__icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7.5h16M4 12h16M4 16.5h9"/><path d="m17 15 2 2 3-3.5"/></svg></div>
+        <div><h3>Cópia do banco sempre à mão</h3><p>Antes de cada atualização do sistema, uma cópia do banco é feita — e o administrador baixa a cópia completa quando quiser, com um botão.</p></div>
+      </article>
+      <article class="seg__item" data-revela>
+        <div class="seg__icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5 5 6.5v5c0 4.3 3 7.6 7 9 4-1.4 7-4.7 7-9v-5z"/><path d="M12 9v4M12 16h.01"/></svg></div>
+        <div><h3>Barreira contra invasão</h3><p>Senhas protegidas com scrypt, trava contra tentativas repetidas por endereço e por conta, sessão que expira e conexão sempre por HTTPS.</p></div>
+      </article>
+      <article class="seg__item" data-revela>
+        <div class="seg__icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg></div>
+        <div><h3>O link do paciente tem fechadura</h3><p>Só abre com a data de nascimento certa, e depois só naquele aparelho. Antes disso a página não mostra nome nem teste: quem recebe um link encaminhado não descobre de quem é.</p></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================== PLANOS -->
+<section class="secao" id="planos" aria-labelledby="titulo-planos">
+  <div class="caixa">
+    <div class="cabeca cabeca--centro" data-revela>
+      <p class="olho">Planos</p>
+      <h2 id="titulo-planos">Preço por clínica. <em>Sem surpresa</em> por profissional.</h2>
+      <p class="lead">Escolha pela quantidade de profissionais da equipe. Recepção e administração não contam.</p>
+    </div>
+    <div class="centro">
+      <div class="periodo" role="group" aria-label="Forma de pagamento">
+        <button type="button" data-periodo="mensal" aria-pressed="true">Mensal</button>
+        <button type="button" data-periodo="anual" aria-pressed="false">Anual <small>2 meses grátis</small></button>
+      </div>
+    </div>
+
+    <div class="planos">
+      <article class="plano" data-revela>
+        <h3>Consultório</h3>
+        <p class="plano__para">Até <b>3 profissionais</b> atendendo.</p>
+        <div class="preco"><span class="preco__moeda">R$</span><span class="preco__valor" data-mensal="249" data-anual="207">249</span><span class="preco__mes">/mês</span></div>
+        <p class="preco__nota" data-mensal="Implantação de R$ 200, uma vez só." data-anual="R$ 2.490 por ano · implantação de R$ 200.">Implantação de R$ 200, uma vez só.</p>
+        <p class="plano__tudo">Tudo incluído</p>
+        <a class="btn btn--linha btn--cheio" href="https://wa.me/5581971010607?text=Ol%C3%A1!%20Quero%20conhecer%20o%20LA%20Cl%C3%ADnicas%20%E2%80%94%20plano%20Consult%C3%B3rio.">Quero o Consultório</a>
+      </article>
+
+      <article class="plano plano--destaque" data-revela>
+        <h3>Clínica</h3>
+        <p class="plano__para">Até <b>10 profissionais</b> atendendo.</p>
+        <div class="preco"><span class="preco__moeda">R$</span><span class="preco__valor" data-mensal="449" data-anual="374">449</span><span class="preco__mes">/mês</span></div>
+        <p class="preco__nota" data-mensal="Implantação de R$ 200, uma vez só." data-anual="R$ 4.490 por ano · implantação de R$ 200.">Implantação de R$ 200, uma vez só.</p>
+        <p class="plano__tudo">Tudo incluído</p>
+        <a class="btn btn--acao btn--cheio" href="https://wa.me/5581971010607?text=Ol%C3%A1!%20Quero%20conhecer%20o%20LA%20Cl%C3%ADnicas%20%E2%80%94%20plano%20Cl%C3%ADnica.">Quero o Clínica</a>
+      </article>
+
+      <article class="plano" data-revela>
+        <h3>Centro Clínico</h3>
+        <p class="plano__para">Profissionais <b>sem limite</b>.</p>
+        <div class="preco"><span class="preco__moeda">R$</span><span class="preco__valor" data-mensal="790" data-anual="658">790</span><span class="preco__mes">/mês</span></div>
+        <p class="preco__nota" data-mensal="Implantação de R$ 200, uma vez só." data-anual="R$ 7.900 por ano · implantação de R$ 200.">Implantação de R$ 200, uma vez só.</p>
+        <p class="plano__tudo">Tudo incluído</p>
+        <a class="btn btn--linha btn--cheio" href="https://wa.me/5581971010607?text=Ol%C3%A1!%20Quero%20conhecer%20o%20LA%20Cl%C3%ADnicas%20%E2%80%94%20plano%20Centro%20Cl%C3%ADnico.">Quero o Centro Clínico</a>
+      </article>
+    </div>
+
+    <div class="incluso" data-revela>
+      <h3>Tudo incluído, em qualquer plano</h3>
+      <p>De um plano para outro muda só o número de profissionais. Recepção e administração não contam no limite.</p>
+      <ul>
+        <li>Agenda, pacientes e prontuário por especialidade</li>
+        <li>Anamneses prontas e impressões com os dados da clínica</li>
+        <li><b>13 testes de rastreio e desafios por link — envios ilimitados</b></li>
+        <li>Situação de cada envio em tempo real e respostas direto no prontuário</li>
+        <li>Perfis de administração, recepção e profissional</li>
+        <li>Relatórios e auditoria completa</li>
+        <li>Dados sensíveis criptografados e cópia do banco quando quiser</li>
+        <li>Chat da equipe, com foto e aviso sonoro</li>
+        <li>Sistema no endereço da sua clínica</li>
+        <li>Um modelo de anamnese ou teste sob medida por semestre</li>
+        <li>Importação assistida dos seus pacientes e treinamento da equipe</li>
+        <li>Suporte por WhatsApp em horário comercial</li>
+      </ul>
+    </div>
+
+    <div class="modulo" data-revela>
+      <div>
+        <p class="olho olho--claro">Módulo opcional</p>
+        <h3>Vídeo: atender e reunir sem sair do sistema</h3>
+        <ul>
+          <li>Chamada de vídeo e reunião de até 6 pessoas, com partilha de tela</li>
+          <li>Link para quem é de fora entrar sem criar conta</li>
+          <li>A reunião fica numa janela à parte: dá para abrir o prontuário e anotar durante a chamada</li>
+          <li>Imagem e som vão direto entre os aparelhos, criptografados</li>
+        </ul>
+      </div>
+      <div class="modulo__preco">
+        <div class="preco"><span class="preco__moeda">+ R$</span><span class="preco__valor">19</span><span class="preco__mes">/pessoa/mês</span></div>
+        <p>Por pessoa da equipe com o vídeo ligado, em qualquer plano. Pacientes e convidados que entram pelo link não pagam.</p>
+        <a class="btn btn--claro btn--cheio" href="https://wa.me/5581971010607?text=Ol%C3%A1!%20Quero%20saber%20do%20m%C3%B3dulo%20de%20v%C3%ADdeo%20do%20LA%20Cl%C3%ADnicas.">Quero o vídeo</a>
+      </div>
+    </div>
+
+    <div class="calc" data-revela>
+      <div>
+        <h3>Compare com o que você paga hoje</h3>
+        <p>Informe quantos profissionais atendem na clínica e quanto o seu sistema atual cobra por profissional, por mês.</p>
+        <p class="calc__fonte">A conta é feita aqui mesmo, no seu navegador — nada do que você digita é enviado.</p>
+      </div>
+      <div>
+        <div class="calc__rotulo"><label for="calc-n">Profissionais na clínica</label><output id="calc-saida" for="calc-n">4</output></div>
+        <input id="calc-n" type="range" min="1" max="20" value="4" step="1">
+        <div class="calc__campo">
+          <label for="calc-preco">Seu sistema atual cobra, por profissional, por mês</label>
+          <div class="calc__reais"><span aria-hidden="true">R$</span><input id="calc-preco" type="number" min="0" max="5000" step="1" inputmode="decimal" placeholder="digite o valor"></div>
+        </div>
+        <label class="calc__check"><input type="checkbox" id="calc-video"> Somar o módulo de vídeo para os profissionais (+ R$ 19 por pessoa)</label>
+        <div class="calc__barras">
+          <div class="calc__linha" id="calc-linha-atual" hidden><b>O que você paga hoje</b><span id="calc-mercado"></span><div class="calc__barra calc__barra--mercado"><i id="calc-barra-mercado"></i></div></div>
+          <div class="calc__linha"><b id="calc-plano">LA Clínicas — Clínica</b><span id="calc-la">R$ 449/mês</span><div class="calc__barra calc__barra--la"><i id="calc-barra-la"></i></div></div>
+        </div>
+        <p class="calc__resultado" id="calc-resultado" aria-live="polite">Digite quanto você paga hoje por profissional para ver a diferença.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================================================= IMPLANTAÇÃO -->
+<section class="secao secao--sem-topo" aria-labelledby="titulo-impl">
+  <div class="caixa">
+    <div class="cabeca" data-revela>
+      <p class="olho">Implantação</p>
+      <h2 id="titulo-impl">Do contrato ao primeiro atendimento, <em>com a gente do lado.</em></h2>
+    </div>
+    <ol class="passos">
+      <li data-revela><h3>Conversa</h3><p>Entendemos a rotina da clínica: especialidades, salas, quem faz o quê.</p></li>
+      <li data-revela><h3>Instalação exclusiva</h3><p>Seu sistema no ar, com banco e chave próprios, endereço seguro e os dados da clínica nas impressões.</p></li>
+      <li data-revela><h3>Cadastros iniciais</h3><p>Profissionais, salas, procedimentos com suas cores e convênios — já entregamos montado.</p></li>
+      <li data-revela><h3>Treinamento</h3><p>Uma sessão online com a equipe. Depois, suporte por WhatsApp sempre que precisar.</p></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============================================================== ORIGEM -->
+<section class="secao origem" aria-labelledby="titulo-origem">
+  <div class="caixa origem__grade">
+    <div data-revela>
+      <p class="olho" id="titulo-origem">Nasceu dentro de uma clínica</p>
+      <blockquote class="citacao">Não foi pensado numa sala de reunião. Foi construído ao lado de uma clínica de psicanálise e terapias integrativas, no ritmo dos pedidos de quem atende.</blockquote>
+      <p class="lead">Boa parte das funcionalidades nasceu de pedidos de quem atende: o desafio que guarda o rascunho, a recepção que não abre prontuário, a impressão que cabe anos de tratamento.</p>
+    </div>
+    <div class="numeros" data-revela>
+      <div class="numero"><b>38</b><span>atualizações registradas no histórico do sistema</span></div>
+      <div class="numero"><b>13</b><span>testes de rastreio prontos para enviar</span></div>
+      <div class="numero"><b>290</b><span>verificações automáticas nas suítes de teste do sistema</span></div>
+      <div class="numero"><b>1</b><span>instalação por clínica — seus dados não se misturam</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================ FAQ -->
+<section class="secao" id="perguntas" aria-labelledby="titulo-faq">
+  <div class="caixa">
+    <div class="cabeca cabeca--centro" data-revela>
+      <p class="olho">Perguntas frequentes</p>
+      <h2 id="titulo-faq">Antes de você perguntar</h2>
+    </div>
+    <div class="faq">
+      <details>
+        <summary>Preciso instalar alguma coisa nos computadores?</summary>
+        <p>Não. A equipe entra pelo navegador, com usuário e senha de cada pessoa. O paciente responde testes e desafios pelo navegador do celular.</p>
+      </details>
+      <details>
+        <summary>O paciente precisa baixar aplicativo ou criar conta para responder?</summary>
+        <p>Não. Ele recebe um link pelo WhatsApp, confirma a data de nascimento e responde no navegador do celular. O que ele escreve fica salvo enquanto responde.</p>
+      </details>
+      <details>
+        <summary>Onde ficam os dados da minha clínica?</summary>
+        <p>Cada clínica tem uma instalação exclusiva, com banco de dados e chave de criptografia próprios. Os dados sensíveis são criptografados. E os dados são seus: o administrador baixa a cópia completa do banco quando quiser.</p>
+      </details>
+      <details>
+        <summary>Posso usar os meus próprios testes e modelos de anamnese?</summary>
+        <p>Os desafios você escreve como quiser, direto no sistema. Testes de rastreio e modelos de anamnese novos são montados por nós: um por semestre está incluído em qualquer plano.</p>
+      </details>
+      <details>
+        <summary>O LA Clínicas faz faturamento de convênio (TISS) ou financeiro?</summary>
+        <p>Não. O LA Clínicas cuida do atendimento: agenda, prontuário, anamneses, testes e equipe. Os convênios são cadastrados para organizar a agenda, sem faturamento. Preferimos dizer isso agora do que depois da assinatura.</p>
+      </details>
+      <details>
+        <summary>O vídeo está incluído nos planos?</summary>
+        <p>Não. O vídeo é um módulo à parte: R$ 19 por pessoa da equipe, por mês, ligado só para quem vai usar. Pacientes e convidados que entram pelo link não pagam.</p>
+      </details>
+      <details>
+        <summary>Tem fidelidade?</summary>
+        <p>No plano mensal, não: cancela quando quiser e recebe a cópia completa dos seus dados. No anual você paga 10 meses e usa 12.</p>
+      </details>
+      <details>
+        <summary>E se a minha equipe passar do limite do plano?</summary>
+        <p>Você muda de plano no mês seguinte, sem reinstalar nada e sem perder nenhum dado. Recepção e administração nunca contam no limite — só os profissionais que atendem.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================= CONTATO FINAL -->
+<section class="secao final" id="contato" aria-labelledby="titulo-final">
+  <div class="caixa final__grade">
+    <div data-revela>
+      <p class="olho olho--claro">Demonstração</p>
+      <h2 id="titulo-final">Veja a sua clínica <em>funcionando</em> antes de decidir.</h2>
+      <p class="lead">Mostramos o sistema com a rotina da sua equipe: a agenda, um prontuário de verdade e um teste chegando pelo celular.</p>
+    </div>
+    <form class="form" id="form-demo" novalidate data-revela>
+      <h3>Agendar demonstração</h3>
+      <div class="campo"><label for="f-nome">Seu nome</label><input id="f-nome" name="nome" autocomplete="name" required></div>
+      <div class="campo"><label for="f-clinica">Nome da clínica</label><input id="f-clinica" name="clinica" autocomplete="organization" required></div>
+      <div class="campos-2">
+        <div class="campo"><label for="f-equipe">Profissionais</label>
+          <select id="f-equipe" name="equipe"><option>1 a 3</option><option selected>4 a 10</option><option>Mais de 10</option></select></div>
+        <div class="campo"><label for="f-area">Área principal</label>
+          <select id="f-area" name="area"><option>Psicologia</option><option>Psicanálise</option><option>Terapias integrativas</option><option>Multiprofissional</option><option>Outra</option></select></div>
+      </div>
+      <p class="form__erro" id="form-erro" role="alert"></p>
+      <button class="btn btn--acao btn--cheio" type="submit">Continuar no WhatsApp
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10h12M11 5l5 5-5 5"/></svg></button>
+      <p class="form__nota">Nada é gravado aqui: o formulário só monta a mensagem e abre a conversa.</p>
+    </form>
+  </div>
+</section>
+
+</main>
+
+<!-- ============================================================= RODAPÉ -->
+<footer class="rodape">
+  <div class="caixa">
+    <div class="rodape__grade">
+      <div>
+        <a class="marca" href="/" aria-label="LA Clínicas — início">
+          <svg class="marca__simbolo" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="12" fill="#FAF6F0"/><path d="M34.63 21.15A11 11 0 1 1 24.96 13.04" fill="none" stroke="#16302B" stroke-width="4.6" stroke-linecap="round"/><circle cx="31.07" cy="15.57" r="3" fill="#B4502A"/></svg>
+          <span class="marca__nome"><b>LA</b>Clínicas</span>
+        </a>
+        <p class="rodape__frase">Gestão para clínicas que acompanham de perto.</p>
+      </div>
+      <nav aria-labelledby="rod-produto"><h2 id="rod-produto">Produto</h2>
+        <ul><li><a href="#entre-sessoes">Entre sessões</a></li><li><a href="#recursos">Funcionalidades</a></li><li><a href="#seguranca">Segurança e LGPD</a></li><li><a href="#planos">Planos</a></li></ul></nav>
+      <nav aria-labelledby="rod-ajuda"><h2 id="rod-ajuda">Ajuda</h2>
+        <ul><li><a href="#perguntas">Perguntas frequentes</a></li><li><a href="#contato">Agendar demonstração</a></li><li><a href="/privacidade/">Privacidade</a></li></ul></nav>
+      <div><h2>Fale com a gente</h2>
+        <ul><li><a href="https://wa.me/5581971010607?text=Ol%C3%A1!%20Quero%20conhecer%20o%20LA%20Cl%C3%ADnicas." rel="noopener" target="_blank">WhatsApp (81) 97101-0607</a></li><li>Caruaru — PE</li></ul></div>
+    </div>
+    <div class="rodape__base">
+      <span>© <span id="ano">2026</span> LA Clínicas · um produto LA Software House · CNPJ 31.579.940/0001-00</span>
+      <a class="dev-credit" href="https://luizaugust.me" target="_blank" rel="noopener" title="Sim, fizemos o nosso próprio site">
+        <svg viewBox="0 0 100 100" width="15" height="15" fill="currentColor" aria-hidden="true"><rect x="17" y="42" width="10" height="34" rx="4.5"/><rect x="17" y="74" width="66" height="8" rx="4"/><rect x="33" y="50" width="10" height="24" rx="4.5"/><rect x="47" y="21" width="10" height="53" rx="4.5"/><rect x="61" y="38" width="10" height="36" rx="4.5"/><rect x="75" y="55" width="8" height="19" rx="4"/><path d="M52 4 L54.7 10.4 L61 13 L54.7 15.6 L52 22 L49.3 15.6 L43 13 L49.3 10.4 Z"/></svg>
+        <span>Feito em casa por <b>LA&nbsp;Software&nbsp;House</b></span>
+      </a>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
