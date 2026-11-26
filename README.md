@@ -65,6 +65,11 @@ limites próprios — não tocam nos dados de desenvolvimento.
 
 ## Histórico
 
+- **0.6.0 (26/11/2026) — site em /site/.** O `criar-site.sh` instala também o serviço `laclinicas-site`
+  e põe `location /site/` (proxy para a 5213 tirando o prefixo, com `X-Forwarded-Prefix: /site`).
+  O site (1.3.0) usa endereços RELATIVOS e o server.js injeta `<base href="<prefixo>/">` em todo
+  HTML (prefixo validado: só `/[A-Za-z0-9_-]+`; CSP `base-uri 'self'`); o vhost próprio do site
+  (`criar-site-vendas.sh`) zera o cabeçalho, então o mesmo código serve na raiz de um domínio.
 - **0.5.1 (26/11/2026) — correções da primeira instalação.** O log anunciava v0.4.1: `APP_VERSION`
   (server.js) e `SISTEMA_VERSION` (restrito.js) eram escritos à mão — agora os dois leem o
   `package.json`. E o ensaio do desafio ACME dos dois instaladores rodava logo depois do

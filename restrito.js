@@ -53,6 +53,10 @@ const SISTEMA_VERSION = require("./package.json").version;
    cliente: o texto fala do que ELA ganhou, nunca de outra instalação.
    ========================================================================== */
 const HISTORICO_VERSOES = [
+  { versao: "0.6.0", data: "2026-11-26", titulo: "Site de vendas no mesmo endereço", mudancas: [
+    "O site de vendas passa a abrir em /site/, no mesmo endereço do sistema",
+    "A instalação do sistema já instala e confere o site, que segue num serviço separado",
+  ] },
   { versao: "0.5.1", data: "2026-11-26", titulo: "Correções da primeira instalação", mudancas: [
     "O registro do servidor anunciava a versão anterior: a versão agora vem de um lugar só",
     "O certificado do site seguro sai na primeira tentativa, sem precisar rodar o instalador de novo",

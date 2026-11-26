@@ -14,6 +14,17 @@ cd site && node server.js     # http://localhost:5213/
 | `/marca/` | Manual da marca (noindex) — símbolo, cores, tipografia, voz |
 | `/404.html` | Página de erro |
 
+## Onde ele abre
+
+- **Hoje:** `https://laclinicas.projetos.luizaugust.me/site/` — o `criar-site.sh` do sistema instala
+  este serviço e o nginx repassa `/site/` para cá, tirando o prefixo e avisando qual é
+  (`X-Forwarded-Prefix`).
+- **Domínio próprio (depois):** `nginx/criar-site-vendas.sh <domínio>` — site na raiz.
+
+Por isso **nenhum endereço interno começa com `/`**: as páginas usam caminhos relativos
+(`assets/...`, `privacidade/`, `./`) e o server.js põe um `<base href="<prefixo>/">` em cada
+HTML. Link novo com `/` no começo funciona na raiz e QUEBRA em /site/.
+
 ## Identidade "Ciclo"
 
 Símbolo: anel aberto com um ponto na abertura (C de Clínicas · ciclo do

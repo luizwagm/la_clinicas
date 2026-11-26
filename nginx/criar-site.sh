@@ -7,7 +7,13 @@
 #      sudo bash nginx/criar-site.sh laclinicas.projetos.luizaugust.me
 #      sudo bash nginx/criar-site.sh laclinicas.projetos.luizaugust.me sistema.clinica-cliente.com.br
 #
-#  Opções: --porta N (padrão 5204) · --usuario NOME (padrão deploy) · --sem-tls
+#  Opções: --porta N (padrão 5204) · --porta-site N (padrão 5213)
+#          --usuario NOME (padrão deploy) · --sem-tls
+#
+#  O SITE DE VENDAS (pasta site/) sobe junto, em serviço próprio
+#  (laclinicas-site), e fica em https://<domínio>/site/ — o nginx repassa
+#  /site/ para ele tirando o prefixo e avisando qual é (X-Forwarded-Prefix).
+#  Para um domínio só do site, há o nginx/criar-site-vendas.sh.
 #  E-mail do Let's Encrypt: o da conta que o certbot já tem neste servidor.
 #  Para outro, rode com  EMAIL_TLS=<endereço> sudo -E bash nginx/criar-site.sh ...
 #
@@ -32,6 +38,8 @@ DESTINO="${DESTINO:-$(cd "$(dirname "$0")/.." && pwd)}"
 USUARIO="${USUARIO:-deploy}"
 GRUPO="${GRUPO:-deploy}"
 PORTA="${PORTA:-5204}"
+PORTA_SITE="${PORTA_SITE:-5213}"
+APP_SITE="laclinicas-site"
 ARQ_ENV="/etc/${APP}.env"
 EMAIL_TLS="${EMAIL_TLS:-}"
 RAIZ_ACME="/var/www/certbot"
@@ -42,6 +50,7 @@ while [ $# -gt 0 ]; do
   case "$1" in
     --sem-tls)  COM_TLS=0; shift ;;
     --porta)    PORTA="${2:-}"; shift 2 ;;
+    --porta-site) PORTA_SITE="${2:-}"; shift 2 ;;
     --usuario)  USUARIO="${2:-}"; GRUPO="${2:-}"; shift 2 ;;
     -h|--ajuda|--help) sed -n '2,27p' "$0" | sed 's/^#\s\?//'; exit 0 ;;
     -*) echo "opção desconhecida: $1" >&2; exit 1 ;;
@@ -58,6 +67,9 @@ bom()   { printf "\033[1;32m%s\033[0m\n" "$*"; }
 [ "${#DOMINIOS[@]}" -gt 0 ] || erro "falta o domínio.  Uso: sudo bash nginx/criar-site.sh laclinicas.projetos.luizaugust.me"
 for d in "${DOMINIOS[@]}"; do case "$d" in *.*) : ;; *) erro "\"$d\" não parece um domínio" ;; esac; done
 case "$PORTA" in ''|*[!0-9]*) erro "porta inválida: $PORTA" ;; esac
+case "$PORTA_SITE" in ''|*[!0-9]*) erro "porta do site inválida: $PORTA_SITE" ;; esac
+TEM_SITE=0
+if [ -f "$DESTINO/site/server.js" ] && [ -f "$DESTINO/${APP_SITE}.service" ]; then TEM_SITE=1; fi
 
 temCertificado() { [ -f "/etc/letsencrypt/live/$1/fullchain.pem" ]; }
 # `|| true`: sem conexão o curl imprime 000 E sai com erro; com `|| echo 000`
@@ -113,6 +125,13 @@ if ss -ltnH "( sport = :$PORTA )" 2>/dev/null | grep -q .; then
   fi
 fi
 
+if [ "$TEM_SITE" -eq 1 ] && ss -ltnH "( sport = :$PORTA_SITE )" 2>/dev/null | grep -q .; then
+  if ! systemctl is-active --quiet "$APP_SITE" 2>/dev/null; then
+    ss -ltnpH "( sport = :$PORTA_SITE )" 2>/dev/null | sed 's/^/      /'
+    erro "a porta $PORTA_SITE (site de vendas) já está em uso por outro processo. Escolha outra:  --porta-site 5215"
+  fi
+fi
+
 [ -f "$ARQ_ENV" ] || erro "falta $ARQ_ENV — veja o passo 3 do SUBIR.md"
 [ -n "$(lerEnv PGPASSWORD)" ] || erro "$ARQ_ENV não tem PGPASSWORD"
 CHAVE="$(lerEnv DADOS_CHAVE)"
@@ -123,6 +142,7 @@ case "$CHAVE" in cole-aqui*|*troque*) erro "DADOS_CHAVE ainda é o texto de exem
 echo "    projeto  : $DESTINO"
 echo "    dono     : $USUARIO:$GRUPO"
 echo "    porta    : $PORTA"
+if [ "$TEM_SITE" -eq 1 ]; then echo "    site     : /site/ → 127.0.0.1:$PORTA_SITE"; fi
 echo "    endereços: ${DOMINIOS[*]}"
 
 # ==========================================================================
@@ -174,6 +194,28 @@ fi
 echo "    sistema no ar em 127.0.0.1:$PORTA"
 journalctl -u "$APP" -n 40 --no-pager -o cat | grep -E "Login: admin|migration aplicada|sistema de gestão v" | sed 's/^/    /' || true
 
+# O site de vendas: mesmo clone, processo próprio, sem banco e sem segredo.
+if [ "$TEM_SITE" -eq 1 ]; then
+  sed -e "s#__DESTINO__#${DESTINO}#g" -e "s#__USUARIO__#${USUARIO}#g" \
+      -e "s#__GRUPO__#${GRUPO}#g"     -e "s#__PORTA__#${PORTA_SITE}#g" \
+      "$DESTINO/${APP_SITE}.service" > "/etc/systemd/system/${APP_SITE}.service"
+  chmod 644 "/etc/systemd/system/${APP_SITE}.service"
+  systemctl daemon-reload
+  systemctl enable "$APP_SITE" >/dev/null
+  systemctl restart "$APP_SITE"
+  cod=""
+  for _ in $(seq 1 20); do
+    cod=$(codigo "http://127.0.0.1:${PORTA_SITE}/" 3)
+    [ "$cod" = "200" ] && break
+    sleep 1
+  done
+  if [ "$cod" != "200" ]; then
+    journalctl -u "$APP_SITE" -n 30 --no-pager
+    erro "o site de vendas não respondeu (último código: ${cod:-nenhum}) — veja o log acima"
+  fi
+  echo "    site de vendas no ar em 127.0.0.1:$PORTA_SITE"
+fi
+
 # ==========================================================================
 # GERADOR DO BLOCO DO NGINX — $1 domínio · $2 sim|nao (tem certificado)
 # ==========================================================================
@@ -183,6 +225,24 @@ corpo_proxy() {
   # error_page SEM proxy_intercept_errors: só vale para o 502/504 que o PRÓPRIO
   # nginx gera quando o app não responde. O 503 do app (banco fora, com recado
   # e JSON para a tela) passa intacto.
+  if [ "$TEM_SITE" -eq 1 ]; then
+    # /site/x chega ao site como /x (a barra no fim do proxy_pass tira o
+    # prefixo); o X-Forwarded-Prefix diz a ele onde está montado, para as
+    # páginas acertarem os próprios endereços.
+    cat <<SITE
+    location = /site { return 301 /site/; }
+    location /site/ {
+        proxy_pass http://127.0.0.1:${PORTA_SITE}/;
+        proxy_http_version 1.1;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto \$scheme;
+        proxy_set_header X-Forwarded-Prefix /site;
+        proxy_read_timeout 30s;
+    }
+SITE
+  fi
   cat <<PROXY
     location / {
         proxy_pass http://127.0.0.1:${PORTA};
@@ -435,9 +495,17 @@ confere "código fonte pela web"  "http://127.0.0.1:${PORTA}/server.js"         
 confere "regras pela web"        "http://127.0.0.1:${PORTA}/restrito.js"              404
 confere "credenciais pela web"   "http://127.0.0.1:${PORTA}/.env"                     404
 confere "anexo sem login"        "http://127.0.0.1:${PORTA}/restrito/arquivos/x.png"  403
+if [ "$TEM_SITE" -eq 1 ]; then
+  confere "site de vendas"         "http://127.0.0.1:${PORTA_SITE}/"                    200
+  confere "código do site pela web" "http://127.0.0.1:${PORTA_SITE}/server.js"          404
+fi
 for dom in "${DOMINIOS[@]}"; do
   cod=$(codigo "https://${dom}/restrito/" 12)
   printf "    %-44s %s\n" "https://${dom}/restrito/" "${cod:-sem resposta (certificado ainda não emitido?)}"
+  if [ "$TEM_SITE" -eq 1 ]; then
+    cod=$(codigo "https://${dom}/site/" 12)
+    printf "    %-44s %s\n" "https://${dom}/site/" "${cod:-sem resposta}"
+  fi
 done
 
 echo
@@ -445,6 +513,7 @@ if [ "$falhou" -eq 0 ]; then bom "  Pronto."; else aviso "  Subiu com pendência
 cat <<FIM
 
   Sistema  : https://${DOMINIOS[0]}/restrito/
+  Site     : https://${DOMINIOS[0]}/site/
   Projeto  : ${DESTINO}   (dono ${USUARIO}:${GRUPO}, porta ${PORTA})
   Serviço  : systemctl status ${APP}   ·   journalctl -u ${APP} -f
 

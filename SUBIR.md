@@ -4,7 +4,7 @@
 site de vendas (pasta `site/`). O git, o clone e o `deploy.sh` são um só; cada
 um roda no seu processo, com o seu endereço — o site é vitrine pública e não
 lê segredo nenhum; o sistema guarda prontuário. Os passos 1 a 8 sobem o
-sistema; o **passo 9** sobe o site, no mesmo clone.
+sistema e já levam o site para `/site/` (passo 9).
 
 Do código no seu computador ao primeiro login em
 `https://laclinicas.projetos.luizaugust.me/restrito/`.
@@ -240,27 +240,15 @@ sudo -u postgres dropdb laclinicas_teste_restauro
 
 ---
 
-## 9. Site de vendas (mesmo clone, serviço próprio)
+## 9. Site de vendas
 
-O domínio comercial ainda não está decidido (`laclinicas.com.br` é suposição: é o
-que está no canonical, no sitemap e nos dados estruturados do site). Para ver
-no ar antes disso, use o endereço de trabalho — ele sai **fora do Google**
-sozinho (noindex), para não concorrer com o domínio real depois.
+O passo 6 já instalou: o site abre em
+**`https://laclinicas.projetos.luizaugust.me/site/`** (serviço `laclinicas-site`, porta
+5213, sem banco e sem segredo). O fim do instalador mostra `site de vendas 200` e a
+linha `https://.../site/`.
 
-DNS: registro **A** `laclinicas-site.projetos` → `204.168.208.52` (sem proxy).
-
-```bash
-ss -ltn | grep ':5213 ' || echo "5213 livre"
-cd /var/www/projetos/LA-Clinicas
-sudo bash nginx/criar-site-vendas.sh laclinicas-site.projetos.luizaugust.me
-```
-
-O fim tem de mostrar `a página de vendas 200`, `privacidade 200`, `código do
-site pela web 404`, `package.json pela web 404`, `travessia ../ 404` e **Pronto.**
-Não usa banco nem `/etc/laclinicas.env`.
-
-Quando o domínio real existir (registro A dele e do `www` apontando para o
-servidor), rode de novo com ele — o `www` redireciona sozinho e ele é indexável:
+Quando houver domínio comercial (registro A dele e do `www` apontando para o
+servidor), ele ganha endereço próprio, na raiz e indexável:
 
 ```bash
 sudo bash nginx/criar-site-vendas.sh laclinicas.com.br

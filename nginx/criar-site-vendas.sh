@@ -156,6 +156,9 @@ corpo_proxy() {
         proxy_set_header X-Real-IP \$remote_addr;
         proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto \$scheme;
+        # Domínio próprio = site na raiz. Vazio aqui apaga o cabeçalho que o
+        # visitante mandar: quem diz onde o site está montado é o nginx.
+        proxy_set_header X-Forwarded-Prefix "";
         proxy_read_timeout 30s;
     }
 PROXY
